@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D Transformations</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Style for range sliders */
+        input[type="range"] {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 8px;
+            background: #d3d3d3;
+            outline: none;
+            opacity: 0.7;
+            -webkit-transition: .2s;
+            transition: opacity .2s;
+            border-radius: 4px;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            background: #06b6d4;
+            /* cyan-600 */
+            cursor: pointer;
+            border-radius: 50%;
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            background: #06b6d4;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="container mx-auto max-w-4xl w-full">
+        <h1 class="text-3xl font-bold text-center text-cyan-400 mb-6">2D Transformations</h1>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+
+            <!-- Canvas for drawing -->
+            <div class="md:col-span-2 bg-gray-800 rounded-lg shadow-xl p-4">
+                <canvas id="graphicsCanvas" width="600" height="400" class="bg-white rounded-md w-full"></canvas>
+            </div>
+
+            <!-- Controls -->
+            <div class="bg-gray-800 rounded-lg shadow-xl p-6 space-y-4">
+
+                <!-- Translation -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-2 text-cyan-300">Translation</h2>
+                    <div class="space-y-2">
+                        <label for="translateX" class="block text-sm">Translate X: <span id="translateXVal"
+                                class="font-medium text-cyan-400">0</span> px</label>
+                        <input type="range" id="translateX" min="-150" max="150" value="0" class="w-full">
+                    </div>
+                    <div class="space-y-2 mt-2">
+                        <label for="translateY" class="block text-sm">Translate Y: <span id="translateYVal"
+                                class="font-medium text-cyan-400">0</span> px</label>
+                        <input type="range" id="translateY" min="-100" max="100" value="0" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Rotation -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-2 text-cyan-300">Rotation</h2>
+                    <div class="space-y-2">
+                        <label for="rotation" class="block text-sm">Angle: <span id="rotationVal"
+                                class="font-medium text-cyan-400">0</span> °</label>
+                        <input type="range" id="rotation" min="0" max="360" value="0" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Scaling -->
+                <div>
+                    <h2 class="text-xl font-semibold mb-2 text-cyan-300">Scaling</h2>
+                    <div class="space-y-2">
+                        <label for="scaleX" class="block text-sm">Scale X: <span id="scaleXVal"
+                                class="font-medium text-cyan-400">1.0</span></label>
+                        <input type="range" id="scaleX" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                    </div>
+                    <div class="space-y-2 mt-2">
+                        <label for="scaleY" class="block text-sm">Scale Y: <span id="scaleYVal"
+                                class="font-medium text-cyan-400">1.0</span></label>
+                        <input type="range" id="scaleY" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Reset Button -->
+                <button id="resetButton"
+                    class="w-full bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200">
+                    Reset All
+                </button>
+
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Wait for the DOM to be fully loaded before running the script
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Setup ---
+            const canvas = document.getElementById('graphicsCanvas');
+            const ctx = canvas.getContext('2d');
+
+            // Get all control elements
+            const controls = {
+                tx: document.getElementById('translateX'),
+                ty: document.getElementById('translateY'),
+                angle: document.getElementById('rotation'),
+                sx: document.getElementById('scaleX'),
+                sy: document.getElementById('scaleY'),
+                resetBtn: document.getElementById('resetButton')
+            };
+
+            // Get all value display elements
+            const values = {
+                tx: document.getElementById('translateXVal'),
+                ty: document.getElementById('translateYVal'),
+                angle: document.getElementById('rotationVal'),
+                sx: document.getElementById('scaleXVal'),
+                sy: document.getElementById('scaleYVal')
+            };
+
+            // Define our 2D object (a rectangle)
+            // We define it centered at (0, 0) to make rotation and scaling simple
+            const object = {
+                x: -60, // half-width
+                y: -40, // half-height
+                width: 120,
+                height: 80,
+                color: '#0891b2' // cyan-700
+            };
+
+            // --- 2. Core Drawing Function ---
+            function draw() {
+                // Get current transformation values from controls
+                const tx = parseFloat(controls.tx.value);
+                const ty = parseFloat(controls.ty.value);
+                const angle = parseFloat(controls.angle.value);
+                const sx = parseFloat(controls.sx.value);
+                const sy = parseFloat(controls.sy.value);
+
+                // Update the text display
+                values.tx.textContent = tx;
+                values.ty.textContent = ty;
+                values.angle.textContent = angle;
+                values.sx.textContent = sx.toFixed(1);
+                values.sy.textContent = sy.toFixed(1);
+
+                // Clear the entire canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // --- Transformation Logic ---
+
+                // Save the default (untransformed) canvas state
+                ctx.save();
+
+                // 1. Move the canvas origin to the center.
+                // This makes (0,0) the center of our "world", which is easier to work with.
+                ctx.translate(canvas.width / 2, canvas.height / 2);
+
+                // 2. Apply user's translation
+                // This moves the object relative to the center.
+                ctx.translate(tx, ty);
+
+                // 3. Apply user's rotation
+                // We convert degrees to radians for the canvas API
+                ctx.rotate(angle * Math.PI / 180);
+
+                // 4. Apply user's scaling
+                // This scales the object from its (new) origin.
+                ctx.scale(sx, sy);
+
+                // --- Draw the Object ---
+                // We draw the object at (0,0) relative to the transformations.
+                ctx.fillStyle = object.color;
+                ctx.fillRect(object.x, object.y, object.width, object.height);
+
+                // Draw a small red dot at the object's origin (0,0) to show its pivot point
+                ctx.fillStyle = 'red';
+                ctx.beginPath();
+                ctx.arc(0, 0, 5, 0, 2 * Math.PI); // 5px radius circle at (0,0)
+                ctx.fill();
+
+                // Restore the canvas to its original state (before we moved the origin)
+                ctx.restore();
+
+                // --- Draw Helper ---
+                // Draw a small black crosshair at the canvas's true center for reference
+                ctx.fillStyle = 'black';
+                ctx.fillRect(canvas.width / 2 - 5, canvas.height / 2 - 1, 10, 2);
+                ctx.fillRect(canvas.width / 2 - 1, canvas.height / 2 - 5, 2, 10);
+            }
+
+            // --- 3. Event Listeners ---
+
+            // Redraw whenever any slider value changes
+            Object.values(controls).forEach(control => {
+                if (control.id !== 'resetButton') {
+                    control.addEventListener('input', draw);
+                }
+            });
+
+            // Reset button functionality
+            controls.resetBtn.addEventListener('click', () => {
+                controls.tx.value = 0;
+                controls.ty.value = 0;
+                controls.angle.value = 0;
+                controls.sx.value = 1;
+                controls.sy.value = 1;
+                // Trigger the 'input' event on one of the sliders to force a redraw
+                controls.tx.dispatchEvent(new Event('input'));
+            });
+
+            // Initial draw when the page loads
+            draw();
+        });
+    </script>
+</body>
+
+</html>
