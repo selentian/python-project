@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdZar - Crown Your Future with Smart Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(17, 24, 39, 0.7), rgba(17, 24, 39, 0.7)), url('https://images.unsplash.com/photo-1554494557-0d9c49c6b24a?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        /* New class for about section background */
+        .about-section {
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        /* Updated features section with a more relevant background */
+        .features-section {
+             background: linear-gradient(rgba(249, 250, 251, 0.95), rgba(249, 250, 251, 0.95)), url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        /* Updated footer style with a background image */
+        .footer-section {
+             background: linear-gradient(rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.9)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .group:hover .group-hover\:block {
+            display: block;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800">
+
+    <!-- Header Section -->
+    <header class="bg-white shadow-md sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-indigo-600" data-lang-key="navBrand">EdZar</a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#home" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navHome">Home</a>
+                <a href="#about" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navAbout">About Us</a>
+                <a href="#features" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navFeatures">Features</a>
+                <!-- Language Dropdown -->
+                <div class="relative group">
+                    <button class="text-gray-600 hover:text-indigo-600 focus:outline-none flex items-center">
+                        <i class="fas fa-globe mr-2"></i> <span data-lang-key="navLanguage">Language</span> <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-20 hidden group-hover:block">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('en')">English</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('hi')">Hindi</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('ks')">Kashmiri</a>
+                    </div>
+                </div>
+                <a href="#" id="login-button" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transition duration-300" data-lang-key="navLogin">Log In</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden flex items-center">
+                <i class="fas fa-bars text-indigo-600 text-2xl"></i>
+            </button>
+        </nav>
+        <!-- Mobile Menu -->
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <a href="#home" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navHomeMobile">Home</a>
+            <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navAboutMobile">About Us</a>
+            <a href="#features" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navFeaturesMobile">Features</a>
+            <a href="#" id="mobile-login-button" class="block py-2 px-4 text-sm bg-indigo-600 text-white text-center rounded-b-lg hover:bg-indigo-700" data-lang-key="navLoginMobile">Log In</a>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section id="home" class="hero-section text-white h-[70vh] flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight" data-lang-key="heroTitle">Crown Your Future with Smart Guidance</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto" data-lang-key="heroSubtitle">A Visual & Technical Blueprint for Empowering Youth. Your one-stop personalized career and education advisor.</p>
+                <a href="#features" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-10 rounded-full text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300" data-lang-key="heroButton">Discover Your Path</a>
+            </div>
+        </section>
+
+        <!-- About Us Section -->
+        <section id="about" class="py-20 about-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800" data-lang-key="aboutTitle">Solving Critical Challenges for Today's Youth</h2>
+                    <p class="text-gray-600 mt-4 max-w-3xl mx-auto" data-lang-key="aboutSubtitle">We dismantle the core barriers—accessibility gaps, socio-economic constraints, and guidance deficits—that limit opportunities for young individuals.</p>
+                </div>
+                <div class="flex flex-wrap items-center -mx-4">
+                    <div class="w-full md:w-1/2 px-4 mb-8 md:mb-0">
+                        <img src="https://images.unsplash.com/photo-1521737711867-e3b97375f902?q=80&w=2070&auto=format&fit=crop" alt="Our Vision - A diverse group of young people collaborating" class="rounded-lg shadow-xl">
+                    </div>
+                    <div class="w-full md:w-1/2 px-4">
+                        <h3 class="text-2xl font-semibold mb-4" data-lang-key="approachTitle">A New Approach for Youth Empowerment</h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="approachSubtitle">EdZar provides an integrated ecosystem for holistic development and positive engagement. Our platform is designed to be accessible, protective, and culturally relevant to empower the next generation.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-center">
+                                <i class="fas fa-wifi-slash text-indigo-500 text-3xl mr-4 w-8 text-center"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-lang-key="featureOffline">Offline-First</h4>
+                                    <p class="text-sm text-gray-600" data-lang-key="featureOfflineDesc">Ensuring accessibility in remote areas without internet.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                               <i class="fas fa-palette text-indigo-500 text-3xl mr-4 w-8 text-center"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-lang-key="featureCultural">Cultural Design</h4>
+                                    <p class="text-sm text-gray-600" data-lang-key="featureCulturalDesc">Integrates local stories and identity to engage youth.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-users text-indigo-500 text-3xl mr-4 w-8 text-center"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-lang-key="featureCommunity">Community-Driven</h4>
+                                    <p class="text-sm text-gray-600" data-lang-key="featureCommunityDesc">Collaboration for real-world support and projects.</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center">
+                                <i class="fas fa-seedling text-indigo-500 text-3xl mr-4 w-8 text-center"></i>
+                                <div>
+                                    <h4 class="font-semibold" data-lang-key="featureHolistic">Holistic Growth</h4>
+                                    <p class="text-sm text-gray-600" data-lang-key="featureHolisticDesc">Covers skills, mentorship, and psycho-social support.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Features Section -->
+        <section id="features" class="py-20 features-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800" data-lang-key="modulesTitle">Our Key Software Modules</h2>
+                    <p class="text-gray-600 mt-4 max-w-2xl mx-auto" data-lang-key="modulesSubtitle">A digital guidance platform with dedicated modules for every step of your journey.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <!-- Feature Cards -->
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-route text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleRaah">Raah: Career Exploration Hub</h3><p class="text-gray-600" data-lang-key="moduleRaahDesc">Browse hyper-localized content, discover opportunities, and explore career paths with interactive maps and success stories.</p></div></div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-lightbulb text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleHunar">Hunar: Skill Development Portal</h3><p class="text-gray-600" data-lang-key="moduleHunarDesc">Access courses in digital marketing, agri-tech, and more, aligned with local job markets and gamified for engagement.</p></div></div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-hands-helping text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleRehnuma">Rehnuma: Mentorship Network</h3><p class="text-gray-600" data-lang-key="moduleRehnumaDesc">Connect with verified mentors, read inspiring blogs, and grow your professional network for structured guidance and support.</p></div></div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-heart-pulse text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleSukoon">Sukoon: Psycho-Social Support</h3><p class="text-gray-600" data-lang-key="moduleSukoonDesc">Find resources for mental well-being, including guided meditations, professional directories, and anonymous support forums.</p></div></div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-peace text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleAman">Aman: Peacebuilding & E-Choupals</h3><p class="text-gray-600" data-lang-key="moduleAmanDesc">Engage in gamified peacebuilding curricula and anonymous forums to discuss sensitive topics and foster dialogue.</p></div></div>
+                    <div class="bg-white/80 backdrop-blur-sm rounded-lg shadow-lg overflow-hidden transform hover:-translate-y-2 transition-transform duration-300"><div class="p-6"><i class="fas fa-trophy text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleGamification">Gamification Engine</h3><p class="text-gray-600" data-lang-key="moduleGamificationDesc">Complete modules, earn 'Tajruba Points' & 'Nishaan' badges, and redeem them for mentorship and workshops.</p></div></div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="footer-section text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p data-lang-key="footerRights">&copy; 2025 EdZar. All rights reserved.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- Login Modal -->
+    <div id="login-modal" class="fixed inset-0 z-50 items-center justify-center hidden">
+        <div class="modal-backdrop absolute inset-0"></div>
+        <div class="relative bg-white w-full max-w-md p-8 rounded-lg shadow-xl">
+            <button id="close-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button>
+            <h2 class="text-2xl font-bold text-center mb-6">Login Status</h2>
+            <div id="auth-status" class="text-center">
+                <p>You are not logged in.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Static Language and UI script -->
+    <script>
+        const translations = {en:{navBrand:"EdZar",navHome:"Home",navAbout:"About Us",navFeatures:"Features",navContact:"Contact",navLanguage:"Language",navLogin:"Log In",navHomeMobile:"Home",navAboutMobile:"About Us",navFeaturesMobile:"Features",navContactMobile:"Contact",navLoginMobile:"Log In",heroTitle:"Crown Your Future with Smart Guidance",heroSubtitle:"A Visual & Technical Blueprint for Empowering Youth. Your one-stop personalized career and education advisor.",heroButton:"Discover Your Path",aboutTitle:"Solving Critical Challenges for Today's Youth",aboutSubtitle:"We dismantle the core barriers—accessibility gaps, socio-economic constraints, and guidance deficits—that limit opportunities for young individuals.",approachTitle:"A New Approach for Youth Empowerment",approachSubtitle:"EdZar provides an integrated ecosystem for holistic development and positive engagement. Our platform is designed to be accessible, protective, and culturally relevant to empower the next generation.",featureOffline:"Offline-First",featureOfflineDesc:"Ensuring accessibility in remote areas without internet.",featureCultural:"Cultural Design",featureCulturalDesc:"Integrates local stories and identity to engage youth.",featureCommunity:"Community-Driven",featureCommunityDesc:"Collaboration for real-world support and projects.",featureHolistic:"Holistic Growth",featureHolisticDesc:"Covers skills, mentorship, and psycho-social support.",modulesTitle:"Our Key Software Modules",modulesSubtitle:"A digital guidance platform with dedicated modules for every step of your journey.",moduleRaah:"Raah: Career Exploration Hub",moduleRaahDesc:"Browse hyper-localized content, discover opportunities, and explore career paths with interactive maps and success stories.",moduleHunar:"Hunar: Skill Development Portal",moduleHunarDesc:"Access courses in digital marketing, agri-tech, and more, aligned with local job markets and gamified for engagement.",moduleRehnuma:"Rehnuma: Mentorship Network",moduleRehnumaDesc:"Connect with verified mentors, read inspiring blogs, and grow your professional network for structured guidance and support.",moduleSukoon:"Sukoon: Psycho-Social Support",moduleSukoonDesc:"Find resources for mental well-being, including guided meditations, professional directories, and anonymous support forums.",moduleAman:"Aman: Peacebuilding & E-Choupals",moduleAmanDesc:"Engage in gamified peacebuilding curricula and anonymous forums to discuss sensitive topics and foster dialogue.",moduleGamification:"Gamification Engine",moduleGamificationDesc:"Complete modules, earn 'Tajruba Points' & 'Nishaan' badges, and redeem them for mentorship and workshops.",contactTitle:"Get In Touch",contactSubtitle:"Have a question or want to partner with us? Our team is here to help.",formName:"Full Name",formEmail:"Email",formMessage:"Your Message",formButton:"Send Message",footerRights:"&copy; 2025 EdZar. All rights reserved."},hi:{navBrand:"एडज़ार",navHome:"होम",navAbout:"हमारे बारे में",navFeatures:"विशेषताएँ",navContact:"संपर्क",navLanguage:"भाषा",navLogin:"लॉग इन करें",navHomeMobile:"होम",navAboutMobile:"हमारे बारे में",navFeaturesMobile:"विशेषताएँ",navContactMobile:"संपर्क",navLoginMobile:"लॉग इन करें",heroTitle:"स्मार्ट मार्गदर्शन से अपने भविष्य को संवारें",heroSubtitle:"युवाओं को सशक्त बनाने के लिए एक विज़ुअल और तकनीकी ब्लूप्रिंट। आपका वन-स्टॉप व्यक्तिगत करियर और शिक्षा सलाहकार।",heroButton:"अपना रास्ता खोजें",aboutTitle:"आज के युवाओं के लिए महत्वपूर्ण चुनौतियों का समाधान",aboutSubtitle:"हम मुख्य बाधाओं - पहुंच संबंधी अंतराल, सामाजिक-आर्थिक बाधाएं, और मार्गदर्शन की कमी - को दूर करते हैं जो युवा व्यक्तियों के लिए अवसरों को सीमित करती हैं।",approachTitle:"युवा सशक्तिकरण के लिए एक नया दृष्टिकोण",approachSubtitle:"एडज़ार समग्र विकास और सकारात्मक जुड़ाव के लिए एक एकीकृत पारिस्थितिकी तंत्र प्रदान करता है। हमारा प्लेटफ़ॉर्म अगली पीढ़ी को सशक्त बनाने के लिए सुलभ, सुरक्षात्मक और सांस्कृतिक रूप से प्रासंगिक होने के लिए डिज़ाइन किया गया है।",featureOffline:"ऑफलाइन-फर्स्ट",featureOfflineDesc:"इंटरनेट के बिना दूरदराज के क्षेत्रों में पहुंच सुनिश्चित करना।",featureCultural:"सांस्कृतिक डिजाइन",featureCulturalDesc:"युवाओं को जोड़ने के लिए स्थानीय कहानियों और पहचान को एकीकृत करता है।",featureCommunity:"समुदाय-संचालित",featureCommunityDesc:"वास्तविक दुनिया के समर्थन और परियोजनाओं के लिए सहयोग।",featureHolistic:"समग्र विकास",featureHolisticDesc:"कौशल, परामर्श और मनो-सामाजिक समर्थन को शामिल करता है।",modulesTitle:"हमारे प्रमुख सॉफ्टवेयर मॉड्यूल",modulesSubtitle:"आपकी यात्रा के हर कदम के लिए समर्पित मॉड्यूल के साथ एक डिजिटल मार्गदर्शन मंच।",moduleRaah:"राह: करियर एक्सप्लोरेशन हब",moduleRaahDesc:"अति-स्थानीय सामग्री ब्राउज़ करें, अवसर खोजें, और इंटरेक्टिव मानचित्रों और सफलता की कहानियों के साथ करियर पथों का पता लगाएं।",moduleHunar:"हुनर: कौशल विकास पोर्टल",moduleHunarDesc:"डिजिटल मार्केटिंग, कृषि-तकनीक, और अधिक में पाठ्यक्रमों तक पहुंचें, जो स्थानीय नौकरी बाजारों के साथ संरेखित हैं और जुड़ाव के लिए गेमिफाइड हैं।",moduleRehnuma:"रहनुमा: मेंटरशिप नेटवर्क",moduleRehnumaDesc:"सत्यापित आकाओं से जुड़ें, प्रेरक ब्लॉग पढ़ें, और संरचित मार्गदर्शन और समर्थन के लिए अपने पेशेवर नेटवर्क को बढ़ाएं।",moduleSukoon:"सुकून: मनो-सामाजिक समर्थन",moduleSukoonDesc:"निर्देशित ध्यान, पेशेवर निर्देशिकाएं और अनाम सहायता मंचों सहित मानसिक कल्याण के लिए संसाधन खोजें।",moduleAman:"अमन: शांति निर्माण और ई-चौपाल",moduleAmanDesc:"संवेदनशील विषयों पर चर्चा करने और संवाद को बढ़ावा देने के लिए गेमिफाइड शांति निर्माण पाठ्यक्रम और अनाम मंचों में शामिल हों।",moduleGamification:"गेमिफिकेशन इंजन",moduleGamificationDesc:"मॉड्यूल पूरे करें, 'तजुर्बा पॉइंट्स' और 'निशान' बैज अर्जित करें, और उन्हें मेंटरशिप और कार्यशालाओं के लिए भुनाएं।",contactTitle:"संपर्क में रहें",contactSubtitle:"कोई प्रश्न है या हमारे साथ साझेदारी करना चाहते हैं? हमारी टीम मदद के लिए यहां है।",formName:"पूरा नाम",formEmail:"ईमेल",formMessage:"आपका संदेश",formButton:"संदेश भेजें",footerRights:"&copy; 2025 एडज़ार। सर्वाधिकार सुरक्षित।"},ks:{navBrand:"ایڈزار",navHome:"گھر",navAbout:"اسہٕ متعلق",navFeatures:"خصوصیت",navContact:"رابطہ",navLanguage:"زبان",navLogin:"لاگ ان",navHomeMobile:"گھر",navAboutMobile:"اسہٕ متعلق",navFeaturesMobile:"خصوصیت",navContactMobile:"رابطہ",navLoginMobile:"لاگ ان",heroTitle:"سمارٹ رہنمٲیی سٟتؠ پنُن مستقبل روشن کٔرِو",heroSubtitle:"نوجوانن بااختیار بناونہٕ خٲطرٕ اَکھ بصری تہٕ تکنیکی بلیو پرنٹ۔ توہُن ون سٹاپ ذاتی کیریئر تہٕ تٲلیمی مشیر۔",heroButton:"پنُن پان ژھانڈِو",aboutTitle:"اَزک نوجوانن ہند اہم چیلنجن ہُنٛد حل",aboutSubtitle:"أسؠ بنیٲدی رکاوٹہٕ دور کران چھِ - رسٲیی ہنٛد فرق، سماجی و اقتصادی رکاوٹہٕ، تہٕ رہنمٲیی ہنٛز کمی - یم نوجوانن خٲطرٕ موقعہٕ کم کران چھِ۔",approachTitle:"نوجوانن ہنٛز بااختیاری خٲطرٕ اَکھ نٔو طریق",approachSubtitle:"ایڈزار چھُ جامع ترقی تہٕ مثبت مشغولیت خٲطرٕ اَکھ مربوط ماحولیٲتی نظام فراہم کران۔ اسہُن پلیٹ فارم چھُ ینہٕ وٲلؠ نسلہِ بااختیار بناونہٕ خٲطرٕ قابل رسٲیی، حفاظتی تہٕ ثقافتی طور پٲٹھؠ متعلقہٕ آسنہٕ خٲطرٕ ڈیزائن کٔرِت۔",featureOffline:"آف لائن-فرسٹ",featureOfflineDesc:"انٹرنیٹ ورٲے دور دراز علاقن مَنٛز رسٲیی یقینی بناوُن۔",featureCultural:"ثقافتی ڈیزائن",featureCulturalDesc:"نوجوانن مشغول کرنہٕ خٲطرٕ مقامی کہانی تہٕ شناخت شٲمل کران چھُ۔",featureCommunity:"کمیونٹی سٟتؠ چلن وۄل",featureCommunityDesc:"حقیقی دنیاہک تعاون تہٕ پروجیکٹن خٲطرٕ اشتراک۔",featureHolistic:"جامع ترقی",featureHolisticDesc:"مہارت، رہنمٲیی تہٕ نفسیٲتی-سماجی تعاون فراہم کران چھُ۔",modulesTitle:"اسہٕ کین اہم سافٹ ویئر ماڈیول",modulesSubtitle:"توہنٛد سفر کس پرٛٮ۪تھ قدمس خٲطرٕ وقف ماڈیولن سٟتؠ اَکھ ڈیجیٹل رہنمٲیی پلیٹ فارم۔",moduleRaah:"راہ: کیریئر کی تلاش کا مرکز",moduleRaahDesc:"مقامی مواد براؤز کٔرِو، موقعہٕ تلاش کٔرِو، تہٕ انٹرایکٹو نقشہٕ تہٕ کامیٲبی ہنٛز داستانن ہنٛد ذریعہٕ کیریئرک وتہٕ تلاش کٔرِو۔",moduleHunar:"ہنر: مہارت کی ترقی کا پورٹل",moduleHunarDesc:"ڈیجیٹل مارکیٹنگ، ایگری ٹیک، تہٕ بیترِ مَنٛز کورسن تام رسٲیی حٲصل کٔرِو، یم مقامی جاب مارٹ سٟتؠ مطابقت تھاوان چھِ تہٕ مشغولیت خٲطرٕ گیمفائڈ چھِ۔",moduleRehnuma:"رہنما: مینٹرشپ نیٹ ورک",moduleRehnumaDesc:"تصدیق شدٕ رہنمٲی سٟتؠ جڑِو، متاثر کن بلاگ پرِو، تہٕ منظم رہنمٲیی تہٕ حمایت خٲطرٕ پنُن پیشہ ورانہٕ نیٹ ورک بڑٲوِو۔",moduleSukoon:"سکون: نفسیاتی-سماجی مدد",moduleSukoonDesc:"ذہنی صحت خٲطرٕ وسائل ژھانڈِو، بشمول ہدایت شدٕ مراقبہ، پیشہ ورانہٕ ڈائرکٹری، تہٕ گمنام سپورٹ فورم۔",moduleAman:"امن: امن سازی اور ای-چوپال",moduleAmanDesc:"حساس موضوعات پؠٹھ بحث کرنہٕ تہٕ بات چیتہِ فروغ دینہٕ خٲطرٕ گیمفائڈ امن سازی نصاب تہٕ گمنام فورمن مَنٛز مشغول روٗزِو۔",moduleGamification:"گیمیفیکیشن انجن",moduleGamificationDesc:"ماڈیول مکمل کٔرِو، 'تجربہ پوائنٹس' تہٕ 'نشان' بیج حٲصل کٔرِو، تہٕ تمن رہنمٲیی تہٕ ورکشاپن خٲطرٕ استعمال کٔرِو۔",contactTitle:"رابطس مَنٛز روزِو",contactSubtitle:"کیاہ سوال چھُ یا اسہٕ سٟتؠ شراکت کرُن چھُ چاہان؟ اسہٕ ہنٛز ٹیم چھِ مدد خٲطرٕ تیار۔",formName:"پورٕ ناو",formEmail:"ای میل",formMessage:"توہُنٛد پیغام",formButton:"پیغام سوزِو",footerRights:"&copy; 2025 ایڈزار۔ تمام حقوق محفوظ۔"}};
+        function changeLanguage(lang){document.querySelectorAll("[data-lang-key]").forEach(elem=>{const key=elem.getAttribute("data-lang-key");translations[lang]&&translations[lang][key]&&(elem.innerHTML=translations[lang][key])}),document.documentElement.lang=lang}document.addEventListener("DOMContentLoaded",function(){changeLanguage("en");const mobileMenuButton=document.getElementById("mobile-menu-button"),mobileMenu=document.getElementById("mobile-menu");mobileMenuButton.addEventListener("click",function(){mobileMenu.classList.toggle("hidden")}),document.querySelectorAll('a[href^="#"]').forEach(anchor=>{anchor.addEventListener("click",function(e){e.preventDefault();const targetId=this.getAttribute("href"),targetElement=document.querySelector(targetId);targetElement&&targetElement.scrollIntoView({behavior:"smooth",block:"start"}),mobileMenu.classList.contains("hidden")||mobileMenu.classList.add("hidden")})})});
+    </script>
+    
+    <!-- Firebase and App Logic -->
+    <script type="module">
+        // Import Firebase modules
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, serverTimestamp, setLogLevel } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // --- Firebase Configuration ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "DEMO", authDomain: "DEMO", projectId: "DEMO" };
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'default-app-id';
+
+        // Initialize Firebase
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+        
+        // Enable Firestore debug logging
+        // setLogLevel('debug');
+
+        // --- Authentication ---
+        const authStatusDiv = document.getElementById('auth-status');
+
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                console.log("User is signed in:", user.uid);
+                authStatusDiv.innerHTML = `
+                    <p class="text-green-600 font-semibold">You are logged in!</p>
+                    <p class="text-sm text-gray-500 mt-2 break-all">User ID: ${user.uid}</p>
+                `;
+            } else {
+                console.log("User is signed out.");
+                authStatusDiv.innerHTML = '<p>You are not logged in.</p>';
+            }
+        });
+        
+        async function setupAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Authentication failed:", error);
+                authStatusDiv.innerHTML = `<p class="text-red-500">Authentication failed. Please try again later.</p>`;
+            }
+        }
+        
+        setupAuth();
+
+
+        // --- UI Interactions ---
+        const loginModal = document.getElementById('login-modal');
+        const loginButton = document.getElementById('login-button');
+        const mobileLoginButton = document.getElementById('mobile-login-button');
+        const closeModalButton = document.getElementById('close-modal-button');
+        
+        const openModal = () => {
+             loginModal.classList.remove('hidden');
+             loginModal.classList.add('flex');
+        };
+        const closeModal = () => {
+            loginModal.classList.add('hidden');
+            loginModal.classList.remove('flex');
+        };
+
+        loginButton.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+        mobileLoginButton.addEventListener('click', (e) => { e.preventDefault(); openModal(); });
+        closeModalButton.addEventListener('click', closeModal);
+        loginModal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+    </script>
+</body>
+</html>
+
