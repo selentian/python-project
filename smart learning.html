@@ -1,0 +1,615 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EdZar - Crown Your Future with Smart Guidance</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            scroll-behavior: smooth;
+        }
+        .hero-section {
+            background: linear-gradient(rgba(17, 24, 39, 0.75), rgba(17, 24, 39, 0.75)), url('https://images.unsplash.com/photo-1521737604893-d14cc237f11d?q=80&w=2084&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .about-section {
+            background: linear-gradient(rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.95)), url('https://images.unsplash.com/photo-1504384308090-c894fdcc538d?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .features-section {
+             background: linear-gradient(rgba(249, 250, 251, 0.95), rgba(249, 250, 251, 0.95)), url('https://images.unsplash.com/photo-1488590528505-98d2b5aba04b?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .cta-section {
+            background: linear-gradient(rgba(79, 70, 229, 0.85), rgba(124, 58, 237, 0.85)), url('https://images.unsplash.com/photo-1522202176988-66273c2fd55f?q=80&w=2071&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .footer-section {
+             background: linear-gradient(rgba(17, 24, 39, 0.9), rgba(17, 24, 39, 0.9)), url('https://images.unsplash.com/photo-1531297484001-80022131f5a1?q=80&w=2070&auto=format&fit=crop') no-repeat center center/cover;
+        }
+        .modal-backdrop {
+            background-color: rgba(0, 0, 0, 0.6);
+        }
+        .card {
+            transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
+        }
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+        }
+        .flow-arrow {
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .flow-arrow::after {
+            content: '\2794'; /* Right arrow unicode */
+            font-size: 2.5rem;
+            color: #cbd5e1;
+            margin: 0 1rem;
+        }
+        .step-card:hover {
+            transform: translateY(-10px);
+        }
+        @media (max-width: 1023px) {
+            .flow-arrow::after {
+                content: '\2B07'; /* Down arrow unicode */
+                margin: 1rem 0;
+            }
+        }
+        /* Styles for Gamification Module */
+        .card-hover {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+        .badge {
+            transition: all 0.3s ease;
+            transform: scale(0);
+            opacity: 0;
+        }
+        .badge.unlocked {
+            transform: scale(1);
+            opacity: 1;
+        }
+        .task-btn:disabled {
+            background-color: #9ca3af;
+            cursor: not-allowed;
+        }
+    </style>
+</head>
+<body class="bg-gray-100 text-gray-800 antialiased">
+
+    <!-- Header Section -->
+    <header class="bg-white/80 backdrop-blur-sm shadow-lg sticky top-0 z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="#" class="text-2xl font-bold text-indigo-600">
+                <span data-lang-key="navBrand">EdZar</span>
+            </a>
+            <div class="hidden md:flex space-x-6 items-center">
+                <a href="#home" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navHome">Home</a>
+                <a href="#about" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navAbout">About Us</a>
+                <a href="#features" class="text-gray-600 hover:text-indigo-600 transition duration-300" data-lang-key="navFeatures">Features</a>
+                <div class="relative">
+                    <button id="language-button" class="text-gray-600 hover:text-indigo-600 focus:outline-none flex items-center transition-colors duration-300">
+                        <i class="fas fa-globe mr-2"></i> <span data-lang-key="navLanguage">Language</span> <i class="fas fa-chevron-down ml-1 text-xs"></i>
+                    </button>
+                    <div id="language-menu" class="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg py-1 z-20 hidden">
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('en')">English</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('hi')">Hindi</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('ks')">Kashmiri</a>
+                        <a href="#" class="block px-4 py-2 text-sm text-gray-700 hover:bg-indigo-50" onclick="changeLanguage('ar')">العربية</a>
+                    </div>
+                </div>
+                <a href="#" id="login-button" class="bg-indigo-600 text-white px-4 py-2 rounded-full hover:bg-indigo-700 transform hover:scale-105 transition-all duration-300" data-lang-key="navLogin">Log In</a>
+            </div>
+            <button id="mobile-menu-button" class="md:hidden flex items-center">
+                <i class="fas fa-bars text-indigo-600 text-2xl"></i>
+            </button>
+        </nav>
+        <div id="mobile-menu" class="hidden md:hidden bg-white">
+            <a href="#home" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navHomeMobile">Home</a>
+            <a href="#about" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navAboutMobile">About Us</a>
+            <a href="#features" class="block py-2 px-4 text-sm hover:bg-gray-200" data-lang-key="navFeaturesMobile">Features</a>
+            <a href="#" id="mobile-login-button" class="block py-2 px-4 text-sm bg-indigo-600 text-white text-center rounded-b-lg hover:bg-indigo-700 transition-colors duration-300" data-lang-key="navLoginMobile">Log In</a>
+        </div>
+    </header>
+
+    <main>
+        <section id="home" class="hero-section text-white h-auto min-h-[80vh] py-20 flex items-center">
+            <div class="container mx-auto px-6 text-center">
+                <h1 class="text-4xl md:text-6xl font-extrabold mb-4 leading-tight" data-lang-key="heroTitle">Crown Your Future with Smart Guidance</h1>
+                <p class="text-lg md:text-xl mb-8 max-w-3xl mx-auto" data-lang-key="heroSubtitle">A Visual & Technical Blueprint for Empowering Youth. Your one-stop personalized career and education advisor.</p>
+                <a href="#features" class="bg-gradient-to-r from-indigo-600 to-purple-600 text-white font-bold py-4 px-10 rounded-full text-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300" data-lang-key="heroButton">Discover Your Path</a>
+            </div>
+        </section>
+
+        <section id="about" class="py-20 about-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800" data-lang-key="aboutTitle">Solving Critical Challenges for Today's Youth</h2>
+                    <p class="text-gray-600 mt-4 max-w-3xl mx-auto" data-lang-key="aboutSubtitle">We dismantle the core barriers—accessibility gaps, socio-economic constraints, and guidance deficits—that limit opportunities for young individuals.</p>
+                </div>
+                <div class="flex flex-wrap items-center -mx-4">
+                    <div class="w-full md:w-1/2 px-4 mb-8 md:mb-0">
+                        <img src="https://cdn.jsdelivr.net/gh/kashmirivanz/Edzar@main/assets/youth-empowerment.jpg" alt="Our Vision" class="rounded-lg shadow-xl">
+                    </div>
+                    <div class="w-full md:w-1/2 px-4">
+                        <h3 class="text-2xl font-semibold mb-4" data-lang-key="approachTitle">A New Approach for Youth Empowerment</h3>
+                        <p class="text-gray-600 mb-6" data-lang-key="approachSubtitle">EdZar provides an integrated ecosystem for holistic development and positive engagement. Our platform is designed to be accessible, protective, and culturally relevant to empower the next generation.</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                            <div class="flex items-center"><i class="fas fa-wifi-slash text-indigo-500 text-3xl mr-4 w-8 text-center"></i><div><h4 class="font-semibold" data-lang-key="featureOffline">Offline-First</h4><p class="text-sm text-gray-600" data-lang-key="featureOfflineDesc">Ensuring accessibility in remote areas without internet.</p></div></div>
+                            <div class="flex items-center"><i class="fas fa-palette text-indigo-500 text-3xl mr-4 w-8 text-center"></i><div><h4 class="font-semibold" data-lang-key="featureCultural">Cultural Design</h4><p class="text-sm text-gray-600" data-lang-key="featureCulturalDesc">Integrates local stories and identity to engage youth.</p></div></div>
+                            <div class="flex items-center"><i class="fas fa-users text-indigo-500 text-3xl mr-4 w-8 text-center"></i><div><h4 class="font-semibold" data-lang-key="featureCommunity">Community-Driven</h4><p class="text-sm text-gray-600" data-lang-key="featureCommunityDesc">Collaboration for real-world support and projects.</p></div></div>
+                            <div class="flex items-center"><i class="fas fa-seedling text-indigo-500 text-3xl mr-4 w-8 text-center"></i><div><h4 class="font-semibold" data-lang-key="featureHolistic">Holistic Growth</h4><p class="text-sm text-gray-600" data-lang-key="featureHolisticDesc">Covers skills, mentorship, and psycho-social support.</p></div></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="features" class="py-20 features-section">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800" data-lang-key="modulesTitle">Our Key Software Modules</h2>
+                    <p class="text-gray-600 mt-4 max-w-2xl mx-auto" data-lang-key="modulesSubtitle">A digital guidance platform with dedicated modules for every step of your journey.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    <div class="feature-card" data-title-key="moduleRaah" data-desc-key="moduleRaahDesc" data-image-src="https://images.unsplash.com/photo-1486312338219-ce68d2c6f44d?q=80&w=2072&auto=format&fit=crop"><div class="p-6"><i class="fas fa-route text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleRaah">Raah: Career Exploration Hub</h3><p class="text-gray-600" data-lang-key="moduleRaahDesc">Browse hyper-localized content, discover opportunities, and explore career paths with interactive maps and success stories.</p></div></div>
+                    <div class="feature-card" data-title-key="moduleHunar" data-desc-key="moduleHunarDesc" data-image-src="https://images.unsplash.com/photo-1517694712202-1428bc383565?q=80&w=2070&auto=format&fit=crop"><div class="p-6"><i class="fas fa-lightbulb text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleHunar">Hunar: Skill Development Portal</h3><p class="text-gray-600" data-lang-key="moduleHunarDesc">Access courses in digital marketing, agri-tech, and more, aligned with local job markets and gamified for engagement.</p></div></div>
+                    <div class="feature-card" data-title-key="moduleRehnuma" data-desc-key="moduleRehnumaDesc" data-image-src="https://images.unsplash.com/photo-1552664730-d307ca884978?q=80&w=2070&auto=format&fit=crop"><div class="p-6"><i class="fas fa-hands-helping text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleRehnuma">Rehnuma: Mentorship Network</h3><p class="text-gray-600" data-lang-key="moduleRehnumaDesc">Connect with verified mentors, read inspiring blogs, and grow your professional network for structured guidance and support.</p></div></div>
+                    <div class="feature-card" data-title-key="moduleSukoon" data-desc-key="moduleSukoonDesc" data-image-src="https://images.unsplash.com/photo-1506126613408-eca07ce68773?q=80&w=1999&auto=format&fit=crop"><div class="p-6"><i class="fas fa-heart-pulse text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleSukoon">Sukoon: Psycho-Social Support</h3><p class="text-gray-600" data-lang-key="moduleSukoonDesc">Find resources for mental well-being, including guided meditations, professional directories, and anonymous support forums.</p></div></div>
+                    <div class="feature-card" data-title-key="moduleAman" data-desc-key="moduleAmanDesc" data-image-src="https://images.unsplash.com/photo-1583348873926-c22996959325?q=80&w=2070&auto=format&fit=crop"><div class="p-6"><i class="fas fa-peace text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleAman">Aman: Peacebuilding & E-Choupals</h3><p class="text-gray-600" data-lang-key="moduleAmanDesc">Engage in gamified peacebuilding curricula and anonymous forums to discuss sensitive topics and foster dialogue.</p></div></div>
+                    <div class="feature-card" data-title-key="moduleGamification" data-desc-key="moduleGamificationDesc" data-image-src="https://images.unsplash.com/photo-1542744173-8e7e53415bb0?q=80&w=2070&auto=format&fit=crop"><div class="p-6"><i class="fas fa-trophy text-3xl text-indigo-500 mb-4"></i><h3 class="text-xl font-semibold mb-2" data-lang-key="moduleGamification">Gamification Engine</h3><p class="text-gray-600" data-lang-key="moduleGamificationDesc">Complete modules, earn 'Tajruba Points' & 'Nishaan' badges, and redeem them for mentorship and workshops.</p></div></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="get-started" class="py-20 cta-section text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-4" data-lang-key="ctaTitle">Ready to Shape Your Future?</h2>
+                <p class="text-lg md:text-xl mb-8 max-w-2xl mx-auto" data-lang-key="ctaSubtitle">Join EdZar today and take the first step towards a brighter tomorrow. Our platform is free, accessible, and designed for you.</p>
+                <a href="#" id="cta-login-button" class="bg-white text-indigo-600 font-bold py-4 px-10 rounded-full text-lg hover:bg-gray-200 transform hover:scale-105 transition-all duration-300" data-lang-key="ctaButton">Get Started Now</a>
+            </div>
+        </section>
+    </main>
+
+    <footer class="footer-section text-white py-10">
+        <div class="container mx-auto px-6 text-center">
+            <p data-lang-key="footerRights">&copy; 2025 EdZar. All rights reserved.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white transform hover:scale-110 transition-transform duration-300"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transform hover:scale-110 transition-transform duration-300"><i class="fab fa-twitter"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transform hover:scale-110 transition-transform duration-300"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-gray-400 hover:text-white transform hover:scale-110 transition-transform duration-300"><i class="fab fa-linkedin-in"></i></a>
+            </div>
+        </div>
+    </footer>
+    
+    <!-- MODALS AND OVERLAYS -->
+    <div id="feature-modal" class="fixed inset-0 z-[60] flex items-center justify-center p-4 hidden"><div class="modal-backdrop absolute inset-0 bg-black/60"></div><div class="relative bg-white w-full max-w-2xl rounded-lg shadow-xl flex flex-col max-h-[90vh] mx-auto"><div class="flex justify-between items-center p-4 border-b"><h3 id="feature-modal-title" class="text-xl font-semibold text-gray-900"></h3><button id="close-feature-modal-button" type="button" class="text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center"><svg aria-hidden="true" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"></path></svg></button></div><div class="p-6 overflow-y-auto"><div class="flex justify-center mb-4"><img id="feature-modal-image" src="" alt="Feature Image" class="max-w-full h-auto max-h-[50vh] object-contain rounded-lg"></div><p id="feature-modal-description" class="text-gray-600"></p><div class="mt-6 text-center"><button id="feature-action-btn" class="hidden bg-indigo-600 text-white font-bold py-2 px-6 rounded-full hover:bg-indigo-700 transition duration-300"></button></div></div></div></div>
+    <div id="login-modal" class="fixed inset-0 z-50 items-center justify-center hidden"><div class="modal-backdrop absolute inset-0"></div><div class="relative bg-white w-full max-w-md p-8 rounded-lg shadow-xl"><button id="close-modal-button" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 text-2xl">&times;</button><h2 class="text-2xl font-bold text-center mb-6">Connection Status</h2><div id="auth-status" class="text-center"><p>Checking authentication status...</p></div></div></div>
+    
+    <!-- OVERLAYS FOR FEATURES -->
+    <div id="navigator-container" class="fixed inset-0 z-[70] bg-gray-50 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-navigator-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button><header class="text-center mb-8 md:mb-12"><h1 class="text-4xl md:text-5xl font-bold text-indigo-600">CareerPath Navigator</h1><p class="mt-2 text-lg text-gray-600">Your interactive guide to navigating your future.</p></header><nav class="mb-8 flex items-center justify-center text-sm md:text-base"><ol id="breadcrumbs" class="inline-flex items-center space-x-1 md:space-x-3"></ol></nav><main><h2 id="current-stage-title" class="text-2xl md:text-3xl font-semibold text-center text-gray-700 mb-6">Loading...</h2><div id="options-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"></div><div id="no-options" class="text-center text-gray-500 py-10 hidden"><p class="text-xl">You've reached the end of this path!</p><p>Explore other options by going back.</p></div></main></div></div>
+    <div id="hunar-container" class="fixed inset-0 z-[70] bg-gray-50 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-hunar-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button><header class="bg-white shadow-sm"><div class="container mx-auto px-6 py-8 text-center"><h1 class="text-4xl md:text-5xl font-bold text-gray-900">Hunar <span class="text-gray-500">(ਹੁਨਰ)</span></h1><p class="mt-2 text-lg md:text-xl text-gray-600">Skill & Talent Development</p></div></header><main class="container mx-auto px-6 py-12 md:py-20"><div class="grid grid-cols-1 lg:grid-cols-3 gap-8 lg:gap-4 items-start"><div class="flex flex-col items-center space-y-6"><div class="w-full bg-teal-500 text-white p-4 rounded-lg shadow-lg text-center"><h2 class="text-2xl font-bold">DISCOVER YOUR HUNAR</h2></div><div class="w-full space-y-4"><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 flex items-center space-x-4"><div class="bg-teal-100 p-3 rounded-full"><svg class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" /></svg></div><div><h3 class="font-semibold text-lg">Self-Assessment</h3><p class="text-gray-600 text-sm">Interests & Existing Skills</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 flex items-center space-x-4"><div class="bg-teal-100 p-3 rounded-full"><svg class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg></div><div><h3 class="font-semibold text-lg">Explore Local Skills</h3><p class="text-gray-600 text-sm">J&K Industries</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-teal-500 flex items-center space-x-4"><div class="bg-teal-100 p-3 rounded-full"><svg class="h-6 w-6 text-teal-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z" /></svg></div><div><h3 class="font-semibold text-lg">Talent Recognition</h3><p class="text-gray-600 text-sm">Innate Aptitudes</p></div></div></div></div><div class="hidden lg:flex justify-center items-center flow-arrow"></div><div class="flex flex-col items-center space-y-6 mt-8 lg:mt-0"><div class="w-full bg-orange-500 text-white p-4 rounded-lg shadow-lg text-center"><h2 class="text-2xl font-bold">DEVELOP YOUR HUNAR</h2></div><div class="w-full space-y-4"><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 flex items-center space-x-4"><div class="bg-orange-100 p-3 rounded-full"><svg class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" /></svg></div><div><h3 class="font-semibold text-lg">Learning Paths</h3><p class="text-gray-600 text-sm">Courses & Training</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 flex items-center space-x-4"><div class="bg-orange-100 p-3 rounded-full"><svg class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4a2 2 0 114 0v1a1 1 0 001 1h3a1 1 0 011 1v3a1 1 0 01-1 1h-1a2 2 0 100 4h1a1 1 0 011 1v3a1 1 0 01-1 1h-3a1 1 0 01-1-1v-1a2 2 0 10-4 0v1a1 1 0 01-1 1H7a1 1 0 01-1-1v-3a1 1 0 00-1-1H4a2 2 0 110-4h1a1 1 0 001-1V7a1 1 0 011-1h3a1 1 0 001-1V4z" /></svg></div><div><h3 class="font-semibold text-lg">Practical Application</h3><p class="text-gray-600 text-sm">Workshops & Projects</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-orange-500 flex items-center space-x-4"><div class="bg-orange-100 p-3 rounded-full"><svg class="h-6 w-6 text-orange-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" /></svg></div><div><h3 class="font-semibold text-lg">Mentorship & Practice</h3><p class="text-gray-600 text-sm">(Rehnuma)</p></div></div></div></div><div class="hidden lg:flex justify-center items-center flow-arrow"></div><div class="flex flex-col items-center space-y-6 mt-8 lg:mt-0"><div class="w-full bg-green-500 text-white p-4 rounded-lg shadow-lg text-center"><h2 class="text-2xl font-bold">APPLY YOUR HUNAR</h2></div><div class="w-full space-y-4"><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 flex items-center space-x-4"><div class="bg-green-100 p-3 rounded-full"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" /></svg></div><div><h3 class="font-semibold text-lg">Career Pathways</h3><p class="text-gray-600 text-sm">Jobs & Ventures</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 flex items-center space-x-4"><div class="bg-green-100 p-3 rounded-full"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" /></svg></div><div><h3 class="font-semibold text-lg">Growth & Mastery</h3><p class="text-gray-600 text-sm">Continuous Learning</p></div></div><div class="bg-white p-6 rounded-lg shadow-md border-l-4 border-green-500 flex items-center space-x-4"><div class="bg-green-100 p-3 rounded-full"><svg class="h-6 w-6 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" /></svg></div><div><h3 class="font-semibold text-lg">Fulfilling Future</h3><p class="text-gray-600 text-sm">(Sukoon)</p></div></div></div></div></div><div class="mt-16 text-center"><div class="flex justify-center items-center mb-4"><svg class="h-10 w-10 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"/></svg></div><div class="inline-block bg-blue-600 text-white font-bold text-xl md:text-2xl px-8 py-4 rounded-lg shadow-2xl">SUCCESSFUL CAREER JOURNEY</div></div></main></div></div>
+    <div id="rehnuma-container" class="fixed inset-0 z-[70] bg-gray-50 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-rehnuma-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button><main><section class="relative text-white min-h-[50vh] flex items-center justify-center overflow-hidden"><div class="absolute inset-0 bg-gray-900"><img src="https://images.unsplash.com/photo-1556761175-5973dc0f32e7?q=80&w=2232&auto=format&fit=crop" alt="Mentorship Meeting" class="w-full h-full object-cover opacity-40"/></div><div class="relative text-center p-6 z-10"><h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Guiding Your Career Journey</h1><p class="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto drop-shadow-md">Connect with experienced mentors, learn from their journeys, and build the future you deserve.</p></div></section><section class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-3xl md:text-4xl font-bold text-gray-900">Your Path to Success in 3 Steps</h2><p class="text-gray-600 mt-4 max-w-2xl mx-auto">A clear and supportive path designed to help you achieve your career milestones.</p></div><div class="flex flex-col lg:flex-row justify-center items-center gap-8"><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-teal-50 border-t-4 border-teal-500"><h3 class="text-2xl font-bold mb-6 text-teal-600">Discover Guides</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-teal-100 text-teal-600"><i class="fas fa-users"></i></div><span class="text-gray-700">Browse Mentor Profiles (Local Heroes)</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-teal-100 text-teal-600"><i class="fas fa-book-open"></i></div><span class="text-gray-700">Explore Success Stories & Journeys</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-teal-100 text-teal-600"><i class="fas fa-search"></i></div><span class="text-gray-700">Identify Industry Experts</span></li></ul></div><div class="text-gray-300 my-4 lg:my-0 lg:mx-4 transform rotate-90 lg:rotate-0"><i class="fas fa-arrow-right text-4xl"></i></div><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-orange-50 border-t-4 border-orange-500"><h3 class="text-2xl font-bold mb-6 text-orange-600">Connect & Learn</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-orange-100 text-orange-600"><i class="fas fa-comments"></i></div><span class="text-gray-700">Interactive Q&A Forums</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-orange-100 text-orange-600"><i class="fas fa-handshake"></i></div><span class="text-gray-700">Matched 1-on-1/Group Mentorship</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-orange-100 text-orange-600"><i class="fas fa-chalkboard-teacher"></i></div><span class="text-gray-700">Workshops & Webinars by Experts</span></li></ul></div><div class="text-gray-300 my-4 lg:my-0 lg:mx-4 transform rotate-90 lg:rotate-0"><i class="fas fa-arrow-right text-4xl"></i></div><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-purple-50 border-t-4 border-purple-500"><h3 class="text-2xl font-bold mb-6 text-purple-600">Grow & Succeed</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-purple-100 text-purple-600"><i class="fas fa-chart-bar"></i></div><span class="text-gray-700">Skill Development & Feedback</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-purple-100 text-purple-600"><i class="fas fa-shield-alt"></i></div><span class="text-gray-700">Navigate Challenges (Support System)</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-purple-100 text-purple-600"><i class="fas fa-graduation-cap"></i></div><span class="text-gray-700">Achieve Career Milestones</span></li></ul></div></div></div></section><section class="py-20 bg-indigo-700 text-white"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl md:text-4xl font-bold mb-4">Join Our Community Today</h2><p class="text-lg md:text-xl text-indigo-200 mb-8 max-w-2xl mx-auto">Whether you're looking for guidance or want to share your expertise, Rehnuma is the place for you.</p><div class="flex flex-col sm:flex-row justify-center gap-4"><a href="#" class="bg-white text-indigo-600 font-bold py-3 px-8 rounded-full text-lg">Find a Mentor</a><a href="#" class="bg-indigo-500 border-2 border-indigo-400 text-white font-bold py-3 px-8 rounded-full text-lg">Become a Guide</a></div></div></section></main></div></div>
+    <div id="sukoon-container" class="fixed inset-0 z-[70] bg-slate-50 text-slate-800 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-sukoon-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button><header class="bg-teal-600 text-white text-center py-16 md:py-24"><div class="container mx-auto px-6"><h1 class="text-4xl md:text-6xl font-bold tracking-tight">The Journey to Sukoon (ਸਕੂਨ)</h1><p class="mt-4 text-lg md:text-xl max-w-3xl mx-auto text-teal-100">Finding Inner Calm and Fulfillment: From Uncertainty to a Life of Purpose</p></div></header><main class="container mx-auto px-6 py-16 md:py-24"><div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10"><div class="step-card bg-white p-8 rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center text-center"><div class="bg-teal-100 p-4 rounded-full mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-600"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg></div><h2 class="text-2xl font-bold text-teal-700 mb-2">1. From Anxiety to Action</h2><div class="space-y-4 mt-4 text-slate-600"><p><span class="font-semibold text-slate-700">Starting Point:</span> Embrace Uncertainty & Stress</p><p><span class="font-semibold text-slate-700">Outcome:</span> Embrace Focused Action</p></div></div><div class="step-card bg-white p-8 rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center text-center"><div class="bg-teal-100 p-4 rounded-full mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-600"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></div><h2 class="text-2xl font-bold text-teal-700 mb-2">2. From a Job to Calling</h2><div class="space-y-4 mt-4 text-slate-600"><p><span class="font-semibold text-slate-700">Path:</span> Discover Your Alignment</p><p><span class="font-semibold text-slate-700">Outcome:</span> Job Satisfaction & Purpose</p></div></div><div class="step-card bg-white p-8 rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center text-center"><div class="bg-teal-100 p-4 rounded-full mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-600"><path d="M15.09 13.34a3 3 0 0 1 0 5.32"/><path d="M8.91 13.34a3 3 0 0 0 0 5.32"/><path d="M12 2a4.5 4.5 0 0 0-4.5 4.5v0a4.5 4.5 0 0 0 4.5 4.5h0a4.5 4.5 0 0 0 4.5-4.5v0A4.5 4.5 0 0 0 12 2Z"/><path d="M12 11v1"/><path d="M20 18.32a3 3 0 0 1-1.28 2.53L13 23.5v-4.77"/><path d="M4 18.32a3 3 0 0 0 1.28 2.53L11 23.5v-4.77"/></svg></div><h2 class="text-2xl font-bold text-teal-700 mb-2">3. From Doubt to Confidence</h2><div class="space-y-4 mt-4 text-slate-600"><p><span class="font-semibold text-slate-700">Develop:</span> Clarity & Vision</p><p><span class="font-semibold text-slate-700">Benefit:</span> Unshakeable Confidence</p></div></div><div class="step-card bg-white p-8 rounded-2xl shadow-lg border border-slate-200 flex flex-col items-center text-center"><div class="bg-teal-100 p-4 rounded-full mb-6"><svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-teal-600"><path d="M12 22a10 10 0 0 0 10-10h-2a8 8 0 0 1-8 8v2Z"/><path d="M22 12a10 10 0 0 0-10-10v2a8 8 0 0 1 8 8h2Z"/><path d="M12 2a10 10 0 0 0-10 10h2a8 8 0 0 1 8-8v-2Z"/><path d="M2 12a10 10 0 0 0 10 10v-2a8 8 0 0 1-8-8H2Z"/><path d="m15.5 13.4-3.5-2-3.5 2a2.3 2.3 0 0 0-1.5 2.1V18c0 1.1.9 2 2 2h6c1.1 0 2-.9 2-2v-2.5c0-.8-.5-1.6-1.5-2.1Z"/><path d="M12 6a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/></svg></div><h2 class="text-2xl font-bold text-teal-700 mb-2">Result: A State of Being</h2><div class="space-y-4 mt-4 text-slate-600"><p><span class="font-semibold text-slate-700">Result:</span> Holistic Well-being</p><p class="mt-4 text-lg font-semibold text-teal-800 bg-teal-50 px-4 py-2 rounded-lg">Achieve Lasting SUKOON</p></div></div></div></main><footer class="bg-slate-800 text-white text-center py-12"><div class="container mx-auto px-6"><p class="text-2xl font-semibold text-slate-300">The Ultimate Reward</p><h3 class="text-3xl md:text-4xl font-bold mt-2 text-teal-300">A Fulfilling & Tranquil Life</h3></div></footer></div></div>
+    <div id="aman-container" class="fixed inset-0 z-[70] bg-slate-50 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-aman-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button><main><section class="relative text-white min-h-[50vh] flex items-center justify-center overflow-hidden"><div class="absolute inset-0 bg-gray-900"><img src="https://images.unsplash.com/photo-1579546929518-9e396f3cc809?q=80&w=2070&auto=format&fit=crop" alt="Peaceful Landscape" class="w-full h-full object-cover opacity-40"/></div><div class="relative text-center p-6 z-10"><h1 class="text-4xl md:text-6xl font-extrabold mb-4 drop-shadow-lg">Aman: Peace & Security</h1><p class="text-lg md:text-xl text-gray-200 mb-8 max-w-3xl mx-auto drop-shadow-md">Discover the outcomes of a guided career journey and build a foundation for a peaceful and secure future.</p></div></section><section class="py-20 bg-white"><div class="container mx-auto px-6"><div class="text-center mb-16"><h2 class="text-3xl md:text-4xl font-bold text-gray-900">The Outcomes of a Guided Journey</h2><p class="text-gray-600 mt-4 max-w-2xl mx-auto">From personal growth to community well-being, our platform creates a ripple effect of positive change.</p></div><div class="flex flex-col lg:flex-row justify-center items-center gap-8"><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-sky-50 border-t-4 border-sky-500"><h3 class="text-2xl font-bold mb-6 text-sky-600">Raah Platform Experience</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-sky-100 text-sky-600"><i class="fas fa-search"></i></div><span class="text-gray-700">Guided Career Exploration</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-sky-100 text-sky-600"><i class="fas fa-shield-alt"></i></div><span class="text-gray-700">Safe Space for Learning</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-sky-100 text-sky-600"><i class="fas fa-clipboard-list"></i></div><span class="text-gray-700">Clear Goal Setting & Planning</span></li></ul></div><div class="text-gray-300 my-4 lg:my-0 lg:mx-4 transform rotate-90 lg:rotate-0"><i class="fas fa-arrow-right text-4xl"></i></div><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-lime-50 border-t-4 border-lime-500"><h3 class="text-2xl font-bold mb-6 text-lime-600">Immediate Benefits</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-lime-100 text-lime-600"><i class="fas fa-arrow-down"></i></div><span class="text-gray-700">Reduced Uncertainty & Stress</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-lime-100 text-lime-600"><i class="fas fa-sparkles"></i></div><span class="text-gray-700">Increased Confidence</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-lime-100 text-lime-600"><i class="fas fa-brain"></i></div><span class="text-gray-700">Informed Decision Making</span></li></ul></div><div class="text-gray-300 my-4 lg:my-0 lg:mx-4 transform rotate-90 lg:rotate-0"><i class="fas fa-arrow-right text-4xl"></i></div><div class="w-full max-w-sm rounded-xl p-6 md:p-8 text-left transition-all duration-300 transform hover:-translate-y-2 hover:shadow-2xl bg-emerald-50 border-t-4 border-emerald-500"><h3 class="text-2xl font-bold mb-6 text-emerald-600">Long-Term Aman (Peace)</h3><ul class="space-y-4"><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-emerald-100 text-emerald-600"><i class="fas fa-landmark"></i></div><span class="text-gray-700">Economic Stability & Security</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-emerald-100 text-emerald-600"><i class="fas fa-users"></i></div><span class="text-gray-700">Social Harmony & Community Well-being</span></li><li class="flex items-start"><div class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center mr-4 bg-emerald-100 text-emerald-600"><i class="fas fa-arrow-up"></i></div><span class="text-gray-700">Future Readiness & Hope</span></li></ul></div></div></div></section><section class="py-20 bg-gray-800 text-white"><div class="container mx-auto px-6 text-center"><h2 class="text-3xl md:text-4xl font-bold mb-4">A Foundation for a Peaceful & Secure Future in J&K</h2><p class="text-lg md:text-xl text-gray-300 mb-8 max-w-3xl mx-auto">Join us in building a future where every individual has the opportunity to thrive, contributing to a stable and prosperous community.</p><a href="#" class="bg-emerald-500 text-white font-bold py-3 px-8 rounded-full text-lg">Join The Mission</a></div></section></main></div></div>
+    
+    <!-- Gamification Container -->
+    <div id="gamification-container" class="fixed inset-0 z-[70] bg-slate-50 hidden overflow-y-auto"><div class="container mx-auto p-4 md:p-8 max-w-7xl relative"><button id="close-gamification-btn" class="absolute top-4 right-4 text-gray-500 hover:text-gray-800 z-10"><svg class="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>
+        <main>
+             <section class="text-center py-12">
+                <h1 class="text-4xl md:text-5xl font-extrabold text-indigo-600">Gamification Engine</h1>
+                <p class="text-lg md:text-xl text-slate-600 max-w-3xl mx-auto mt-4">Making Your Career Journey an Epic Quest</p>
+            </section>
+
+            <section id="how-it-works" class="py-12">
+                <div class="text-center mb-12">
+                    <h2 class="text-3xl md:text-4xl font-bold text-gray-800">How The Engine Works</h2>
+                    <p class="text-gray-600 mt-4 max-w-2xl mx-auto">We turn your career journey into an interactive and rewarding experience by connecting your actions to tangible progress.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="space-y-6">
+                        <div class="p-4 bg-teal-500 text-white rounded-lg shadow-lg"><h3 class="text-xl font-bold">1. Your Journey</h3></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-teal-500 card-hover"><i class="fas fa-search text-3xl text-teal-500 mb-4"></i><h4 class="text-lg font-semibold">Explore Career Paths</h4><p class="text-gray-500 mt-2 text-sm">Start by discovering potential career opportunities.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-teal-500 card-hover"><i class="fas fa-list-check text-3xl text-teal-500 mb-4"></i><h4 class="text-lg font-semibold">Set Milestones</h4><p class="text-gray-500 mt-2 text-sm">Plan your steps and define clear, achievable goals.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-teal-500 card-hover"><i class="fas fa-lightbulb text-3xl text-teal-500 mb-4"></i><h4 class="text-lg font-semibold">Connect with Mentors</h4><p class="text-gray-500 mt-2 text-sm">Gain valuable insights and guidance from experts.</p></div>
+                    </div>
+                     <div class="space-y-6">
+                        <div class="p-4 bg-orange-500 text-white rounded-lg shadow-lg"><h3 class="text-xl font-bold">2. The Engine</h3></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500 card-hover"><i class="fas fa-star text-3xl text-orange-500 mb-4"></i><h4 class="text-lg font-semibold">Points & XP for Actions</h4><p class="text-gray-500 mt-2 text-sm">Every action you take earns you experience points.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500 card-hover"><i class="fas fa-shield-halved text-3xl text-orange-500 mb-4"></i><h4 class="text-lg font-semibold">Unlockable Badges</h4><p class="text-gray-500 mt-2 text-sm">Receive badges for acquiring skills and hitting milestones.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-orange-500 card-hover"><i class="fas fa-scroll text-3xl text-orange-500 mb-4"></i><h4 class="text-lg font-semibold">Career Quests & Challenges</h4><p class="text-gray-500 mt-2 text-sm">Engage in structured challenges to build your profile.</p></div>
+                    </div>
+                     <div class="space-y-6">
+                        <div class="p-4 bg-purple-600 text-white rounded-lg shadow-lg"><h3 class="text-xl font-bold">3. Your Outcomes</h3></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-600 card-hover"><i class="fas fa-chart-line text-3xl text-purple-600 mb-4"></i><h4 class="text-lg font-semibold">Reduced Stress</h4><p class="text-gray-500 mt-2 text-sm">Gain clarity and reduce the uncertainty of career planning.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-600 card-hover"><i class="fas fa-trophy text-3xl text-purple-600 mb-4"></i><h4 class="text-lg font-semibold">Visible Progress</h4><p class="text-gray-500 mt-2 text-sm">See your journey unfold and track your achievements.</p></div>
+                        <div class="bg-white p-6 rounded-lg shadow-md border-t-4 border-purple-600 card-hover"><i class="fas fa-gift text-3xl text-purple-600 mb-4"></i><h4 class="text-lg font-semibold">Virtual & Narrative Rewards</h4><p class="text-gray-500 mt-2 text-sm">Stay motivated with a compelling story and rewards.</p></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-12 bg-gray-100 rounded-lg">
+                <div class="text-center mb-12"><h2 class="text-3xl md:text-4xl font-bold text-gray-800">Experience It Yourself</h2><p class="text-gray-600 mt-4 max-w-2xl mx-auto">Complete tasks to earn XP and unlock badges. See how simple and motivating it can be!</p></div>
+                <div class="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+                    <div class="bg-white p-8 rounded-lg shadow-lg"><h3 class="text-2xl font-bold text-gray-700 mb-6">Your Quest Log</h3><div id="taskList" class="space-y-4"></div></div>
+                    <div class="bg-white p-8 rounded-lg shadow-lg sticky top-24">
+                        <h3 class="text-2xl font-bold text-gray-700 mb-6">Your Progress</h3>
+                        <div class="mb-6"><label class="block text-gray-600 text-sm font-semibold mb-2">Experience Points (XP)</label><div class="w-full bg-gray-200 rounded-full h-4"><div id="xpBar" class="bg-indigo-600 h-4 rounded-full transition-all duration-500" style="width: 0%;"></div></div><p class="text-right text-indigo-600 font-bold mt-1"><span id="xpCount">0</span> XP</p></div>
+                        <div><h4 class="text-gray-600 text-sm font-semibold mb-3">Badges Unlocked</h4><div id="badgeContainer" class="flex flex-wrap gap-4"><p id="noBadges" class="text-gray-500 italic text-sm">No badges unlocked yet. Keep going!</p></div></div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="py-12"><div class="container mx-auto px-6 text-center"><div class="max-w-4xl mx-auto"><i class="fas fa-down-long text-4xl text-slate-400 mb-6"></i><div class="bg-indigo-600 text-white p-8 md:p-12 rounded-xl shadow-2xl"><h2 class="text-2xl md:text-4xl font-bold">A Rewarding Path to a Fulfilling Future</h2><p class="mt-4 text-indigo-200">This system is designed to guide you towards <span class="font-semibold">Sukoon</span> (Peace) and <span class="font-semibold">Aman</span> (Tranquility) in your professional life.</p></div></div></div></section>
+        </main>
+    </div></div>
+
+    <!-- Career Details Modal (from navigator) -->
+    <div id="career-modal" class="fixed inset-0 z-[80] flex items-center justify-center p-4 hidden"><div id="career-modal-backdrop" class="absolute inset-0 bg-black bg-opacity-50"></div><div class="bg-white rounded-lg shadow-2xl w-11/12 max-w-2xl m-4 z-10 transform scale-95 transition-transform duration-300"><div class="p-6 md:p-8"><div class="flex justify-between items-start"><h3 id="career-modal-title" class="text-2xl font-bold text-gray-800"></h3><button id="career-modal-close-btn" class="text-gray-400 hover:text-gray-600"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg></button></div><div class="mt-4 text-gray-600 space-y-4"><p id="career-modal-description"></p><div><h4 class="font-semibold text-lg text-gray-700">Example Universities & Colleges:</h4><ul id="career-modal-universities" class="list-disc list-inside mt-2 space-y-1 text-indigo-600"></ul></div></div></div></div></div>
+
+    <script>
+        // --- Static Content and Language Translations ---
+        const translations = {
+            en:{navBrand:"EdZar",navHome:"Home",navAbout:"About Us",navFeatures:"Features",navLanguage:"Language",navLogin:"Log In",navHomeMobile:"Home",navAboutMobile:"About Us",navFeaturesMobile:"Features",navLoginMobile:"Log In",heroTitle:"Crown Your Future with Smart Guidance",heroSubtitle:"A Visual & Technical Blueprint for Empowering Youth. Your one-stop personalized career and education advisor.",heroButton:"Discover Your Path",aboutTitle:"Solving Critical Challenges for Today's Youth",aboutSubtitle:"We dismantle the core barriers—accessibility gaps, socio-economic constraints, and guidance deficits—that limit opportunities for young individuals.",approachTitle:"A New Approach for Youth Empowerment",approachSubtitle:"EdZar provides an integrated ecosystem for holistic development and positive engagement. Our platform is designed to be accessible, protective, and culturally relevant to empower the next generation.",featureOffline:"Offline-First",featureOfflineDesc:"Ensuring accessibility in remote areas without internet.",featureCultural:"Cultural Design",featureCulturalDesc:"Integrates local stories and identity to engage youth.",featureCommunity:"Community-Driven",featureCommunityDesc:"Collaboration for real-world support and projects.",featureHolistic:"Holistic Growth",featureHolisticDesc:"Covers skills, mentorship, and psycho-social support.",modulesTitle:"Our Key Software Modules",modulesSubtitle:"A digital guidance platform with dedicated modules for every step of your journey.",moduleRaah:"Raah: Career Exploration Hub",moduleRaahDesc:"Browse hyper-localized content, discover opportunities, and explore career paths with interactive maps and success stories.",moduleHunar:"Hunar: Skill Development Portal",moduleHunarDesc:"Access courses in digital marketing, agri-tech, and more, aligned with local job markets and gamified for engagement.",moduleRehnuma:"Rehnuma: Mentorship Network",moduleRehnumaDesc:"Connect with verified mentors, read inspiring blogs, and grow your professional network for structured guidance and support.",moduleSukoon:"Sukoon: Psycho-Social Support",moduleSukoonDesc:"Find resources for mental well-being, including guided meditations, professional directories, and anonymous support forums.",moduleAman:"Aman: Peacebuilding & E-Choupals",moduleAmanDesc:"Engage in gamified peacebuilding curricula and anonymous forums to discuss sensitive topics and foster dialogue.",moduleGamification:"Gamification Engine",moduleGamificationDesc:"Complete modules, earn 'Tajruba Points' & 'Nishaan' badges, and redeem them for mentorship and workshops.",ctaTitle:"Ready to Shape Your Future?",ctaSubtitle:"Join EdZar today and take the first step towards a brighter tomorrow. Our platform is free, accessible, and designed for you.",ctaButton:"Get Started Now",footerRights:"&copy; 2025 EdZar. All rights reserved.",explorePath:"Explore Path", viewSkillFlow: "View Skill Flow", viewDetails: "View Details", viewDemo: "View Demo" },
+            hi:{navBrand:"एडज़ार",navHome:"होम",navAbout:"हमारे बारे में",navFeatures:"विशेषताएँ",navLanguage:"भाषा",navLogin:"लॉग इन करें",navHomeMobile:"होम",navAboutMobile:"हमारे बारे में",navFeaturesMobile:"विशेषताएँ",navLoginMobile:"लॉग इन करें",heroTitle:"स्मार्ट मार्गदर्शन से अपने भविष्य को संवारें",heroSubtitle:"युवाओं को सशक्त बनाने के लिए एक विज़ुअल और तकनीकी ब्लूप्रिंट। आपका वन-स्टॉप व्यक्तिगत करियर और शिक्षा सलाहकार।",heroButton:"अपना रास्ता खोजें",aboutTitle:"आज के युवाओं के लिए महत्वपूर्ण चुनौतियों का समाधान",aboutSubtitle:"हम मुख्य बाधाओं - पहुंच संबंधी अंतराल, सामाजिक-आर्थिक बाधाएं, और मार्गदर्शन की कमी - को दूर करते हैं जो युवा व्यक्तियों के लिए अवसरों को सीमित करती हैं।",approachTitle:"युवा सशक्तिकरण के लिए एक नया दृष्टिकोण",approachSubtitle:"एडज़ार समग्र विकास और सकारात्मक जुड़ाव के लिए एक एकीकृत पारिस्थितिकी तंत्र प्रदान करता है। हमारा प्लेटफ़ॉर्म अगली पीढ़ी को सशक्त बनाने के लिए सुलभ, सुरक्षात्मक और सांस्कृतिक रूप से प्रासंगिक होने के लिए डिज़ाइन किया गया है।",featureOffline:"ऑफलाइन-फर्स्ट",featureOfflineDesc:"इंटरनेट के बिना दूरदराज के क्षेत्रों में पहुंच सुनिश्चित करना।",featureCultural:"सांस्कृतिक डिजाइन",featureCulturalDesc:"युवाओं को जोड़ने के लिए स्थानीय कहानियों और पहचान को एकीकृत करता है।",featureCommunity:"समुदाय-संचालित",featureCommunityDesc:"वास्तविक दुनिया के समर्थन और परियोजनाओं के लिए सहयोग।",featureHolistic:"समग्र विकास",featureHolisticDesc:"कौशल, परामर्श और मनो-सामाजिक समर्थन को शामिल करता है।",modulesTitle:"हमारे प्रमुख सॉफ्टवेयर मॉड्यूल",modulesSubtitle:"आपकी यात्रा के हर कदम के लिए समर्पित मॉड्यूल के साथ एक डिजिटल मार्गदर्शन मंच।",moduleRaah:"राह: करियर एक्सप्लोरेशन हब",moduleRaahDesc:"अति-स्थानीय सामग्री ब्राउज़ करें, अवसर खोजें, और इंटरेक्टिव मानचित्रों और सफलता की कहानियों के साथ करियर पथों का पता लगाएं।",moduleHunar:"हुनर: कौशल विकास पोर्टल",moduleHunarDesc:"डिजिटल मार्केटिंग, कृषि-तकनीक, और अधिक में पाठ्यक्रमों तक पहुंचें, जो स्थानीय नौकरी बाजारों के साथ संरेखित हैं और जुड़ाव के लिए गेमिफाइड हैं।",moduleRehnuma:"रहनुमा: मेंटरशिप नेटवर्क",moduleRehnumaDesc:"सत्यापित आकाओं से जुड़ें, प्रेरक ब्लॉग पढ़ें, और संरचित मार्गदर्शन और समर्थन के लिए अपने पेशेवर नेटवर्क को बढ़ाएं।",moduleSukoon:"सुकून: मनो-सामाजिक समर्थन",moduleSukoonDesc:"निर्देशित ध्यान, पेशेवर निर्देशिकाएं और अनाम सहायता मंचों सहित मानसिक कल्याण के लिए संसाधन खोजें।",moduleAman:"अमन: शांति निर्माण और ई-चौपाल",moduleAmanDesc:"संवेदनशील विषयों पर चर्चा करने और संवाद को बढ़ावा देने के लिए गेमिफाइड शांति निर्माण पाठ्यक्रम और अनाम मंचों में शामिल हों।",moduleGamification:"गेमिफिकेशन इंजन",moduleGamificationDesc:"मॉड्यूल पूरे करें, 'तजुर्बा पॉइंट्स' और 'निशान' बैज अर्जित करें, और उन्हें मेंटरशिप और कार्यशालाओं के लिए भुनाएं।",ctaTitle:"क्या आप अपना भविष्य बनाने के लिए तैयार हैं?",ctaSubtitle:"आज ही एडज़ार से जुड़ें और एक उज्जवल कल की ओर पहला कदम बढ़ाएँ। हमारा प्लेटफ़ॉर्म मुफ़्त, सुलभ और आपके लिए डिज़ाइन किया गया है।",ctaButton:"अभी शुरू करें",footerRights:"&copy; 2025 एडज़ार। सर्वाधिकार सुरक्षित।",explorePath:"पथ का अन्वेषण करें", viewSkillFlow: "कौशल प्रवाह देखें", viewDetails: "विवरण देखें", viewDemo: "डेमो देखें" },
+            ks:{navBrand:"ایڈزار",navHome:"گھر",navAbout:"اسہٕ متعلق",navFeatures:"خصوصیت",navLanguage:"زبان",navLogin:"لاگ ان",navHomeMobile:"گھر",navAboutMobile:"اسہٕ متعلق",navFeaturesMobile:"خصوصیت",navLoginMobile:"लाग ان",heroTitle:"سمارٹ رہنمٲیی سٟتؠ پنُن مستقبل روشن کٔرِو",heroSubtitle:"نوجوانن بااختیار بناونہٕ خٲطرٕ اَکھ بصری تہٕ تکنیکی بلیو پرنٹ۔ توہُن ون سٹاپ ذاتی کیریئر تہٕ تٲلیمی مشیر۔",heroButton:"پنُن پان ژھانڈِو",aboutTitle:"اَزک نوجوانن ہند اہم چیلنجن ہُنҷ हल",aboutSubtitle:"أسؠ بنیٲدی رکاوٹہٕ دور کران چھِ - رسٲیی ہنٛد فرق، سماجی و اقتصادی رکاوٹہٕ, تہٕ رہنمٲیی ہنٛز کمی - یم نوجوانن خٲطرٕ موقعہٕ کم کران چھِ۔",approachTitle:"نوجوانن ہنٛز بااختیاری خٲطرٕ اَکھ نٔو طریق",approachSubtitle:"ایڈزار چھُ جامع ترقی تہٕ مثبت مشغولیت خٲطرٕ اَکھ مربوط ماحولیٲتی نظام فراہم کران۔ اسہُن پلیٹ فارم چھُ ینہٕ وٲلؠ نسلہِ بااختیار بناونہٕ خٲطرٕ قابل رسٲیی، حفاظتی تہٕ ثقافتی طور پٲٹھؠ متعلقہٕ آسنہٕ خٲطرٕ ڈیزائن کٔرِت۔",featureOffline:"آف لائن-فرسٹ",featureOfflineDesc:"انٹرنیٹ ورٲے دور دراز علاقن مَنٛز رسٲیی یقینی بناوُن۔",featureCultural:"ثقافتی ڈیزائن",featureCulturalDesc:"نوجوانن مشغول کرنہٕ خٲطرٕ مقامی کہانی تہٕ شناخت شٲمل کران چھُ۔",featureCommunity:"کمیونٹی سٟتؠ چلن وۄل",featureCommunityDesc:"حقیقی دنیاہک تعاون تہٕ پروجیکٹن خٲطرٕ اشتراک۔",featureHolistic:"جامع ترقی",featureHolisticDesc:"مہارت، رہنمٲیی تہٕ نفسیٲتی-سماجی تعاون فراہم کران چھُ۔",modulesTitle:"اسہٕ کین اہم سافٹ ویئر ماڈیول",modulesSubtitle:"توہنٛد سفر کس پرٛٮ۪تھ قدمس خٲطرٕ وقف ماڈیولن سٟتؠ اَکھ ڈیجیٹل رہنمٲیی پلیٹ فارم۔",moduleRaah:"راہ: کیریئر کی تلاش کا مرکز",moduleRaahDesc:"مقامی مواد براؤز کٔرِو، موقعہٕ تلاش کٔرِو، تہٕ انٹرایکٹو نقشہٕ تہٕ کامیٲبی ہنٛز داستانن ہنٛد ذریعہٕ کیریئرک وتہٕ تلاش کٔرِو۔",moduleHunar:"ہنر: مہارت کی ترقی کا پورٹل",moduleHunarDesc:"ڈیجیٹل مارکیٹنگ، ایگری ٹیک، تہٕ بیترِ مَنٛز کورسن تام رسٲیی حٲصل کٔرِو، یم مقامی جاب مارٹ سٟتؠ مطابقت تھاوان چھِ تہٕ مشغولیت خٲطرٕ گیمفائڈ چھِ۔",moduleRehnuma:"رہنما: مینٹرشپ نیٹ ورک",moduleRehnumaDesc:"تصدیق شدٕ رہنمٲی سٟتؠ جڑِو، متاثر کن بلاگ پرِو، تہٕ منظم رہنمٲیی تہٕ حمایت خٲطرٕ پنُن پیشہ ورانہٕ نیٹ ورک بڑٲوِو۔",moduleSukoon:"سکون: نفسیاتی-سماجی مدد",moduleSukoonDesc:"ذہنی صحت خٲطرٕ وسائل ژھانڈِو، بشمول ہدایت شدٕ مراقبہ، پیشہ ورانہٕ ڈائرکٹری، تہٕ گمنام سپورٹ فورم۔",moduleAman:"امن: امن سازی اور ای-چوپال",moduleAmanDesc:"حساس موضوعات پؠٹھ بحث کرنہٕ تہٕ بات چیتہِ فروغ دینہٕ خٲطرٕ گیمفائڈ امن سازی نصاب تہٕ گمنام فورمن مَنٛز مشغول روٗزِو۔",moduleGamification:"گیمیفیکیشن انجن",moduleGamificationDesc:"ماڈیول مکمل کٔرِو، 'تجربہ پوائنٹس' تہٕ 'نشان' بیج حٲصل کٔرِو، تہٕ تمن رہنمٲیی تہٕ ورکشاپن خٲطرٕ استعمال کٔرِو۔",ctaTitle:"پنُن مستقبل بناونہٕ خٲطرٕ تیار؟",ctaSubtitle:"اَز ایڈزارس سٟتؠ رَلِو تہٕ اکہِ روشن مستقبل خٲطرٕ گۄڈنیُک قدم تُلِو۔ اسُن پلیٹ فارم چھُ مفت، رسٲیی مَنٛز تہٕ توہہٕ خٲطرٕ بناونہٕ آمُت۔",ctaButton:"ۄن شۆروٗع کٔرِو",footerRights:"&copy; 2025 ایڈزار۔ تمام حقوق محفوظ۔",explorePath:"راہٕچ تلاش کٔرِو", viewSkillFlow: "ہنرٕ پرواہ وچھو", viewDetails: "تفصیل وچھو", viewDemo: "ڈیمو وچھو" },
+            ar:{navBrand:"إدزار",navHome:"الرئيسية",navAbout:"من نحن",navFeatures:"الميزات",navLanguage:"اللغة",navLogin:"تسجيل الدخول",navHomeMobile:"الرئيسية",navAboutMobile:"من نحن",navFeaturesMobile:"الميزات",navLoginMobile:"تسجيل الدخول",heroTitle:"توّج مستقبلك بالإرشاد الذكي",heroSubtitle:"مخطط مرئي وتقني لتمكين الشباب. مستشارك الشخصي والتعليمي المتكامل.",heroButton:"اكتشف مسارك",aboutTitle:"حل التحديات الحاسمة لشباب اليوم",aboutSubtitle:"نحن نزيل العوائق الأساسية — فجوات الوصول، والقيود الاجتماعية والاقتصادية، ونقص التوجيه — التي تحد من الفرص المتاحة للشباب.",approachTitle:"نهج جديد لتمكين الشباب",approachSubtitle:"يوفر إدزار نظامًا بيئيًا متكاملًا للتنمية الشاملة والمشاركة الإيجابية. تم تصميم منصتنا لتكون سهلة الوصول وواقية وذات صلة ثقافية لتمكين الجيل القادم.",featureOffline:"أوفلاين أولاً",featureOfflineDesc:"ضمان الوصول في المناطق النائية دون إنترنت.",featureCultural:"تصميم ثقافي",featureCulturalDesc:"يدمج القصص والهوية المحلية لإشراك الشباب.",featureCommunity:"يقودها المجتمع",featureCommunityDesc:"التعاون من أجل الدعم والمشاريع في العالم الحقيقي.",featureHolistic:"نمو شامل",featureHolisticDesc:"يغطي المهارات والإرشاد والدعم النفسي الاجتماعي.",modulesTitle:"وحدات برامجنا الرئيسية",modulesSubtitle:"منصة توجيه رقمية مع وحدات مخصصة لكل خطوة في رحلتك.",moduleRaah:"راه: مركز استكشاف المسار الوظيفي",moduleRaahDesc:"تصفح المحتوى المحلي، واكتشف الفرص، واستكشف المسارات الوظيفية باستخدام الخرائط التفاعلية وقصص النجاح.",moduleHunar:"هنر: بوابة تنمية المهارات",moduleHunarDesc:"الوصول إلى دورات في التسويق الرقمي والتكنولوجيا الزراعية والمزيد، بما يتماشى مع أسواق العمل المحلية وبأسلوب الألعاب للمشاركة.",moduleRehnuma:"رهنما: شبكة الإرشاد",moduleRehnumaDesc:"تواصل مع الموجهين المعتمدين، واقرأ المدونات الملهمة، وقم بتنمية شبكتك المهنية للحصول على إرشادات ودعم منظم.",moduleSukoon:"سكون: الدعم النفسي الاجتماعي",moduleSukoonDesc:"ابحث عن موارد للصحة النفسية، بما في ذلك التأملات الموجهة، وأدلة المحترفين، ومنتديات الدعم المجهولة.",moduleAman:"أمان: بناء السلام والمجالس الإلكترونية",moduleAmanDesc:"شارك في مناهج بناء السلام القائمة على الألعاب والمنتديات المجهولة لمناقشة الموضوعات الحساسة وتعزيز الحوار.",moduleGamification:"محرك الألعاب",moduleGamificationDesc:"أكمل الوحدات، واكسب 'نقاط تجربة' وشارات 'نيشان'، واستبدلها بالإرشاد وورش العمل.",ctaTitle:"هل أنت مستعد لتشكيل مستقبلك؟",ctaSubtitle:"انضم إلى إدزار اليوم واتخذ الخطوة الأولى نحو غدٍ أكثر إشراقًا. منصتنا مجانية وسهلة الوصول ومصممة من أجلك.",ctaButton:"ابدأ الآن",footerRights:"&copy; 2025 إدزار. جميع الحقوق محفوظة.",explorePath:"استكشف المسار", viewSkillFlow: "عرض تدفق المهارات", viewDetails: "عرض التفاصيل", viewDemo: "عرض تجريبي" }
+        };
+
+        function changeLanguage(lang) {
+            document.querySelectorAll("[data-lang-key]").forEach(elem => {
+                const key = elem.getAttribute("data-lang-key");
+                if (translations[lang] && translations[lang][key]) {
+                    elem.innerHTML = translations[lang][key];
+                }
+            });
+            document.documentElement.lang = lang;
+            document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            changeLanguage("en");
+            const mobileMenuButton = document.getElementById("mobile-menu-button");
+            const mobileMenu = document.getElementById("mobile-menu");
+            mobileMenuButton.addEventListener("click", () => mobileMenu.classList.toggle("hidden"));
+
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener("click", function (e) {
+                    e.preventDefault();
+                    document.querySelector(this.getAttribute("href")).scrollIntoView({ behavior: "smooth" });
+                    if (!mobileMenu.classList.contains("hidden")) mobileMenu.classList.add("hidden");
+                });
+            });
+            
+            const languageButton = document.getElementById('language-button');
+            const languageMenu = document.getElementById('language-menu');
+            languageButton.addEventListener('click', e => { e.stopPropagation(); languageMenu.classList.toggle('hidden'); });
+            document.addEventListener('click', () => languageMenu.classList.add('hidden'));
+
+            // Feature Modal Logic
+            const featureModal = document.getElementById('feature-modal');
+            const closeFeatureModalButton = document.getElementById('close-feature-modal-button');
+            const featureModalImage = document.getElementById('feature-modal-image');
+            const featureModalTitle = document.getElementById('feature-modal-title');
+            const featureModalDescription = document.getElementById('feature-modal-description');
+            const featureModalBackdrop = featureModal.querySelector('.modal-backdrop');
+            const featureActionBtn = document.getElementById('feature-action-btn');
+
+            const openFeatureModal = (imageSrc, titleKey, descKey) => {
+                const currentLang = document.documentElement.lang || 'en';
+                featureModalImage.src = imageSrc;
+                featureModalTitle.textContent = translations[currentLang][titleKey];
+                featureModalDescription.textContent = translations[currentLang][descKey];
+                
+                featureActionBtn.onclick = null;
+                const actions = {
+                    'moduleRaah': { textKey: 'explorePath', handler: openNavigator },
+                    'moduleHunar': { textKey: 'viewSkillFlow', handler: openHunarFlow },
+                    'moduleRehnuma': { textKey: 'viewDetails', handler: openRehnuma },
+                    'moduleSukoon': { textKey: 'viewDetails', handler: openSukoon },
+                    'moduleAman': { textKey: 'viewDetails', handler: openAman },
+                    'moduleGamification': { textKey: 'viewDemo', handler: openGamification },
+                };
+
+                if (actions[titleKey]) {
+                    featureActionBtn.textContent = translations[currentLang][actions[titleKey].textKey];
+                    featureActionBtn.onclick = actions[titleKey].handler;
+                    featureActionBtn.classList.remove('hidden');
+                } else {
+                    featureActionBtn.classList.add('hidden');
+                }
+                featureModal.classList.remove('hidden');
+            };
+            const closeFeatureModal = () => featureModal.classList.add('hidden');
+            document.querySelectorAll('.feature-card').forEach(card => {
+                card.style.cursor = 'pointer';
+                card.classList.add('cursor-pointer', 'bg-white/80', 'backdrop-blur-sm', 'rounded-lg', 'shadow-lg', 'overflow-hidden', 'transform', 'hover:-translate-y-2', 'hover:shadow-xl', 'transition-all', 'duration-300');
+                card.addEventListener('click', () => openFeatureModal(card.dataset.imageSrc, card.dataset.titleKey, card.dataset.descKey));
+            });
+            closeFeatureModalButton.addEventListener('click', closeFeatureModal);
+            featureModalBackdrop.addEventListener('click', closeFeatureModal);
+
+            // Overlay Logic
+            const setupOverlay = (overlayId, closeBtnId, closeFn) => {
+                const container = document.getElementById(overlayId);
+                const closeBtn = document.getElementById(closeBtnId);
+                closeBtn.addEventListener('click', closeFn);
+                return {
+                    open: (initFn, forceInit = false) => {
+                        closeFeatureModal();
+                        container.classList.remove('hidden');
+                        document.body.classList.add('overflow-hidden');
+                        if (initFn && (!container.dataset.initialized || forceInit)) {
+                            initFn();
+                            if(!forceInit) container.dataset.initialized = 'true';
+                        }
+                    },
+                    close: () => {
+                        container.classList.add('hidden');
+                        document.body.classList.remove('overflow-hidden');
+                    }
+                };
+            };
+            
+            function closeNavigator() { navigatorOverlay.close(); }
+            function closeHunarFlow() { hunarOverlay.close(); }
+            function closeRehnuma() { rehnumaOverlay.close(); }
+            function closeSukoon() { sukoonOverlay.close(); }
+            function closeAman() { amanOverlay.close(); }
+            function closeGamification() { gamificationOverlay.close(); }
+
+            const navigatorOverlay = setupOverlay('navigator-container', 'close-navigator-btn', closeNavigator);
+            const hunarOverlay = setupOverlay('hunar-container', 'close-hunar-btn', closeHunarFlow);
+            const rehnumaOverlay = setupOverlay('rehnuma-container', 'close-rehnuma-btn', closeRehnuma);
+            const sukoonOverlay = setupOverlay('sukoon-container', 'close-sukoon-btn', closeSukoon);
+            const amanOverlay = setupOverlay('aman-container', 'close-aman-btn', closeAman);
+            const gamificationOverlay = setupOverlay('gamification-container', 'close-gamification-btn', closeGamification);
+            
+            function openNavigator() { navigatorOverlay.open(renderNavigator); }
+            function openHunarFlow() { hunarOverlay.open(); }
+            function openRehnuma() { rehnumaOverlay.open(); }
+            function openSukoon() { sukoonOverlay.open(); }
+            function openAman() { amanOverlay.open(); }
+            function openGamification() { gamificationOverlay.open(initGamificationDemo, true); }
+
+        });
+
+        // --- Gamification Demo Logic ---
+        function initGamificationDemo() {
+            const tasks = [
+                { id: 1, text: 'Explore a Career Path', xp: 50 },
+                { id: 2, text: 'Set your First Milestone', xp: 75 },
+                { id: 3, text: 'Connect with a Mentor', xp: 100 },
+                { id: 4, text: 'Complete a Skill Challenge', xp: 125 }
+            ];
+            const badges = [
+                { name: 'Initiate', xpRequired: 50, icon: 'fa-play-circle', color: 'text-green-500' },
+                { name: 'Planner', xpRequired: 125, icon: 'fa-list-check', color: 'text-blue-500' },
+                { name: 'Networker', xpRequired: 225, icon: 'fa-users', color: 'text-purple-500' },
+                { name: 'Achiever', xpRequired: 350, icon: 'fa-trophy', color: 'text-yellow-500' }
+            ];
+            let currentXp = 0;
+            const unlockedBadges = new Set();
+            const maxXP = tasks.reduce((sum, task) => sum + task.xp, 0);
+
+            const taskListEl = document.getElementById('taskList');
+            const xpCountEl = document.getElementById('xpCount');
+            const xpBarEl = document.getElementById('xpBar');
+            const badgeContainerEl = document.getElementById('badgeContainer');
+            
+            // Reset UI for re-opening
+            taskListEl.innerHTML = '';
+            badgeContainerEl.innerHTML = '<p id="noBadges" class="text-gray-500 italic text-sm">No badges unlocked yet. Keep going!</p>';
+            currentXp = 0;
+            unlockedBadges.clear();
+
+            function updateProgress() {
+                xpCountEl.textContent = currentXp;
+                const percentage = maxXP > 0 ? (currentXp / maxXP) * 100 : 0;
+                xpBarEl.style.width = `${percentage}%`;
+                badges.forEach(badge => {
+                    if (currentXp >= badge.xpRequired && !unlockedBadges.has(badge.name)) {
+                        unlockBadge(badge);
+                    }
+                });
+            }
+
+            function unlockBadge(badge) {
+                unlockedBadges.add(badge.name);
+                const noBadgesEl = document.getElementById('noBadges');
+                if (noBadgesEl) noBadgesEl.style.display = 'none';
+
+                const badgeEl = document.createElement('div');
+                badgeEl.className = `badge text-center`;
+                badgeEl.innerHTML = `
+                    <i class="fas ${badge.icon} ${badge.color} text-4xl"></i>
+                    <p class="text-xs font-semibold mt-1 text-gray-600">${badge.name}</p>
+                `;
+                badgeContainerEl.appendChild(badgeEl);
+                
+                setTimeout(() => badgeEl.classList.add('unlocked'), 10);
+            }
+
+            function completeTask(task, btn) {
+                currentXp += task.xp;
+                updateProgress();
+                btn.disabled = true;
+                btn.textContent = 'Done!';
+            }
+
+            tasks.forEach(task => {
+                const taskDiv = document.createElement('div');
+                taskDiv.className = 'flex items-center justify-between bg-gray-50 p-3 rounded-lg';
+                taskDiv.innerHTML = `<p class="text-gray-700">${task.text}</p><button data-task-id="${task.id}" class="task-btn bg-teal-500 text-white px-4 py-1 rounded-md hover:bg-teal-600 transition-colors text-sm font-semibold">+${task.xp} XP</button>`;
+                taskListEl.appendChild(taskDiv);
+            });
+
+            taskListEl.addEventListener('click', (e) => {
+                if(e.target.matches('.task-btn')) {
+                    const taskId = parseInt(e.target.dataset.taskId);
+                    const task = tasks.find(t => t.id === taskId);
+                    if(task && !e.target.disabled) {
+                        completeTask(task, e.target);
+                    }
+                }
+            });
+
+            updateProgress(); // Initial UI state
+        }
+    </script>
+    
+    <!-- Firebase and App Logic -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, doc, getDoc, collection, writeBatch, getDocs, query, where } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+        
+        // --- Firebase Initialization ---
+        const firebaseConfig = typeof __firebase_config !== 'undefined' ? JSON.parse(__firebase_config) : { apiKey: "DEMO", authDomain: "DEMO", projectId: "DEMO" };
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app); // Initialize Firestore
+        const authStatusDiv = document.getElementById('auth-status');
+
+        // --- Authentication Logic ---
+        onAuthStateChanged(auth, user => {
+            if (user) {
+                console.log("User is signed in:", user.uid);
+                authStatusDiv.innerHTML = `<p class="text-green-600 font-semibold">You are logged in!</p><p class="text-sm text-gray-500 mt-2 break-all">User ID: ${user.uid}</p>`;
+            } else {
+                console.log("User is signed out.");
+                authStatusDiv.innerHTML = '<p>You are not logged in.</p>';
+            }
+        });
+        
+        async function setupAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    await signInWithCustomToken(auth, __initial_auth_token);
+                } else {
+                    await signInAnonymously(auth);
+                }
+            } catch (error) {
+                console.error("Authentication failed:", error);
+                authStatusDiv.innerHTML = `<p class="text-red-500">Authentication failed.</p>`;
+            }
+        }
+        
+        setupAuth();
+
+        const loginModal = document.getElementById('login-modal');
+        const closeModalButton = document.getElementById('close-modal-button');
+        const openModal = () => loginModal.classList.remove('hidden');
+        const closeModal = () => loginModal.classList.add('hidden');
+        
+        [document.getElementById('login-button'), document.getElementById('mobile-login-button'), document.getElementById('cta-login-button')].forEach(button => {
+            if (button) button.addEventListener('click', e => { e.preventDefault(); openModal(); });
+        });
+        
+        closeModalButton.addEventListener('click', closeModal);
+        loginModal.querySelector('.modal-backdrop').addEventListener('click', closeModal);
+
+        // --- Career Navigator Core Logic (Refactored for Firestore) ---
+        const appState = { history: ['Start'], get current() { return this.history[this.history.length - 1]; } };
+        const careerModal = document.getElementById('career-modal');
+        const careerDataCache = {}; // Simple in-memory cache
+
+        async function getCareerData(key) {
+            if (careerDataCache[key]) {
+                return careerDataCache[key];
+            }
+            try {
+                const docRef = doc(db, "career-paths", key);
+                const docSnap = await getDoc(docRef);
+                if (docSnap.exists()) {
+                    const data = { id: docSnap.id, ...docSnap.data() };
+                    careerDataCache[key] = data;
+                    return data;
+                } else {
+                    console.warn("No such document in Firestore:", key);
+                    return null;
+                }
+            } catch (error) {
+                console.error("Error fetching career data:", error);
+                return null;
+            }
+        }
+
+        async function renderNavigator() {
+            const currentKey = appState.current;
+            const currentData = await getCareerData(currentKey);
+
+            if (!currentData) {
+                document.getElementById('current-stage-title').textContent = 'Error: Path not found';
+                return;
+            }
+
+            document.getElementById('current-stage-title').textContent = currentData.name;
+            
+            const breadcrumbsContainer = document.getElementById('breadcrumbs');
+            breadcrumbsContainer.innerHTML = '';
+            const breadcrumbDataPromises = appState.history.map(key => getCareerData(key));
+            const breadcrumbDataArray = await Promise.all(breadcrumbDataPromises);
+
+            breadcrumbDataArray.forEach((data, index) => {
+                if (!data) return;
+                const li = document.createElement('li');
+                if (index < appState.history.length - 1) {
+                    li.innerHTML = `<div class="flex items-center"><a href="#" data-key="${data.id}" class="text-indigo-600 hover:underline">${data.name}</a><svg class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"></path></svg></div>`;
+                    li.querySelector('a').addEventListener('click', e => { e.preventDefault(); navigateBackTo(e.target.dataset.key); });
+                } else {
+                    li.innerHTML = `<span class="font-medium text-gray-500">${data.name}</span>`;
+                }
+                breadcrumbsContainer.appendChild(li);
+            });
+
+            const optionsGrid = document.getElementById('options-grid');
+            optionsGrid.innerHTML = '<div>Loading options...</div>';
+            document.getElementById('no-options').classList.toggle('hidden', !currentData.next || currentData.next.length === 0);
+
+            if (currentData.next?.length > 0) {
+                const optionDataPromises = currentData.next.map(optionKey => getCareerData(optionKey));
+                const optionDataArray = await Promise.all(optionDataPromises);
+                
+                optionsGrid.innerHTML = '';
+                optionDataArray.forEach(optionData => {
+                    if (optionData) {
+                        const card = document.createElement('div');
+                        card.className = 'card bg-white p-6 rounded-lg shadow-md cursor-pointer border border-gray-200 relative';
+                        card.innerHTML = `<div class="flex items-center mb-3"><i class="fas ${optionData.icon || 'fa-arrow-right'} text-2xl text-indigo-500 mr-4"></i><h3 class="text-xl font-semibold text-indigo-700">${optionData.name}</h3></div><p class="text-gray-600 mt-2 text-sm">${(optionData.description || '').substring(0, 70)}...</p><button data-key="${optionData.id}" class="absolute top-4 right-4 text-gray-400 hover:text-indigo-600 info-btn"><svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" style="pointer-events: none;"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg></button>`;
+                        card.addEventListener('click', () => navigateTo(optionData.id));
+                        card.querySelector('.info-btn').addEventListener('click', e => { e.stopPropagation(); showCareerModal(e.target.dataset.key); });
+                        optionsGrid.appendChild(card);
+                    }
+                });
+            } else {
+                optionsGrid.innerHTML = '';
+            }
+        }
+
+        function navigateTo(key) { appState.history.push(key); renderNavigator(); }
+        function navigateBackTo(key) { const idx = appState.history.indexOf(key); if (idx > -1) { appState.history = appState.history.slice(0, idx + 1); renderNavigator(); } }
+        
+        async function showCareerModal(key) {
+            const data = await getCareerData(key);
+            if (!data) return;
+            document.getElementById('career-modal-title').textContent = data.name;
+            document.getElementById('career-modal-description').textContent = data.description || 'No description available.';
+            document.getElementById('career-modal-universities').innerHTML = data.universities?.length > 0 ? data.universities.map(uni => `<li>${uni}</li>`).join('') : '<li>Information not available.</li>';
+            careerModal.classList.remove('hidden');
+        }
+
+        document.getElementById('career-modal-backdrop').addEventListener('click', () => careerModal.classList.add('hidden'));
+        document.getElementById('career-modal-close-btn').addEventListener('click', () => careerModal.classList.add('hidden'));
+
+    </script>
+</body>
+</html>
+
