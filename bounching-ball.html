@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Creative Bouncing Balls</title>
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        canvas {
+            background-color: white;
+            border-radius: 0.5rem;
+            /* rounded-lg */
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="container mx-auto max-w-2xl w-full text-center">
+        <h1 class="text-3xl font-bold text-center text-cyan-400 mb-6">Creative Bouncing Balls</h1>
+
+        <div class="bg-gray-800 rounded-lg shadow-xl p-4">
+            <!-- Canvas for drawing -->
+            <canvas id="animationCanvas" width="700" height="450" class="w-full"></canvas>
+            <p class="text-sm text-gray-400 mt-2">Click on the canvas to add a new ball!</p>
+        </div>
+
+        <div class="mt-4 flex justify-center space-x-4">
+            <button id="startStopButton"
+                class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 w-32">
+                Stop
+            </button>
+            <button id="clearButton"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 w-32">
+                Clear
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Setup ---
+            const canvas = document.getElementById('animationCanvas');
+            const ctx = canvas.getContext('2d');
+            const startStopBtn = document.getElementById('startStopButton');
+            const clearBtn = document.getElementById('clearButton');
+
+            let animationId; // To store the ID of the animation frame
+            let isRunning = true; // To track animation state
+
+            // --- 2. Physics Constants ---
+            const gravity = 0.5;      // Vertical acceleration
+            const restitution = 0.8;  // Bounciness (0.8 = 80% energy retained on bounce)
+
+            let balls = []; // Array to hold all our ball objects
+
+            // --- 3. Helper Functions ---
+            function getRandomColor() {
+                const letters = '0123456789ABCDEF';
+                let color = '#';
+                for (let i = 0; i < 6; i++) {
+                    color += letters[Math.floor(Math.random() * 16)];
+                }
+                return color;
+            }
+
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // --- 4. Ball Creation Function ---
+            function createBall(x, y) {
+                const radius = getRandomInt(10, 30);
+                const ball = {
+                    x: x,
+                    y: y,
+                    dx: getRandomInt(-5, 5),   // Random horizontal velocity
+                    dy: getRandomInt(-5, 5),   // Random vertical velocity
+                    radius: radius,
+                    color: getRandomColor()
+                };
+                balls.push(ball);
+            }
+
+            // --- 5. Draw Ball Function ---
+            function drawBall(ball) {
+                ctx.beginPath();
+                ctx.arc(ball.x, ball.y, ball.radius, 0, Math.PI * 2);
+                ctx.fillStyle = ball.color;
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            // --- 6. Animation Loop ---
+            function animate() {
+                // Clear the entire canvas on each frame
+                // A semi-transparent clear can create a "motion blur" effect
+                // ctx.fillStyle = 'rgba(255, 255, 255, 0.3)';
+                // ctx.fillRect(0, 0, canvas.width, canvas.height);
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+
+                // Update and draw each ball
+                for (let i = 0; i < balls.length; i++) {
+                    const ball = balls[i];
+
+                    // --- 2D Transformation: Translation ---
+
+                    // Apply gravity to vertical velocity
+                    ball.dy += gravity;
+
+                    // Apply velocity to position
+                    ball.x += ball.dx;
+                    ball.y += ball.dy;
+
+                    // --- Collision Detection (Bouncing) ---
+
+                    // Bounce off bottom wall
+                    if (ball.y + ball.radius > canvas.height) {
+                        ball.y = canvas.height - ball.radius; // Correct position
+                        ball.dy = -ball.dy * restitution; // Reverse and dampen velocity
+                    }
+
+                    // Bounce off top wall
+                    if (ball.y - ball.radius < 0) {
+                        ball.y = ball.radius; // Correct position
+                        ball.dy = -ball.dy * restitution; // Reverse and dampen
+                    }
+
+                    // Bounce off left or right wall
+                    if (ball.x + ball.radius > canvas.width || ball.x - ball.radius < 0) {
+                        ball.dx = -ball.dx * restitution; // Reverse and dampen
+                        // Correct position
+                        if (ball.x + ball.radius > canvas.width) ball.x = canvas.width - ball.radius;
+                        if (ball.x - ball.radius < 0) ball.x = ball.radius;
+                    }
+
+                    // Draw the ball at its new translated position
+                    drawBall(ball);
+                }
+
+                // Request the next animation frame
+                if (isRunning) {
+                    animationId = requestAnimationFrame(animate);
+                }
+            }
+
+            // --- 7. Event Listeners ---
+            startStopBtn.addEventListener('click', () => {
+                if (isRunning) {
+                    // Stop the animation
+                    cancelAnimationFrame(animationId);
+                    isRunning = false;
+                    startStopBtn.textContent = 'Start';
+                    startStopBtn.classList.remove('bg-cyan-600', 'hover:bg-cyan-700');
+                    startStopBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                } else {
+                    // Start the animation
+                    isRunning = true;
+                    startStopBtn.textContent = 'Stop';
+                    startStopBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    startStopBtn.classList.add('bg-cyan-600', 'hover:bg-cyan-700');
+                    animate(); // Kick off the loop again
+                }
+            });
+
+            // Clear button
+            clearBtn.addEventListener('click', () => {
+                balls.length = 0; // Empty the array
+            });
+
+            // Canvas click to add a ball
+            canvas.addEventListener('click', (e) => {
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+                createBall(x, y);
+            });
+
+            // --- 8. Start ---
+            // Create a few balls to start
+            createBall(100, 100);
+            createBall(200, 50);
+            createBall(300, 150);
+
+            // Start the animation
+            animate();
+        });
+    </script>
+</body>
+
+</html>

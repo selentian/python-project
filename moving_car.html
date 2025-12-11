@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moving Car Animation (Enhanced)</title>
+
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        canvas {
+            background-color: #87CEEB;
+            /* Sky blue background */
+            border-radius: 0.5rem;
+            /* rounded-lg */
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="container mx-auto max-w-2xl w-full text-center">
+        <h1 class="text-3xl font-bold text-center text-cyan-400 mb-6">Moving Car Animation (Enhanced)</h1>
+
+        <div class="bg-gray-800 rounded-lg shadow-xl p-4">
+
+            <!-- The canvas element where the animation is drawn --><canvas id="animationCanvas" width="800"
+                height="400" class="w-full"></canvas>
+        </div>
+
+        <div class="mt-4 flex justify-center space-x-4">
+            <button id="startStopButton"
+                class="bg-cyan-600 hover:bg-cyan-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 w-32">
+                Stop
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Setup ---
+            const canvas = document.getElementById('animationCanvas');
+            const ctx = canvas.getContext('2d');
+            const startStopBtn = document.getElementById('startStopButton');
+
+            let animationId; // To store the ID of the animation frame
+            let isRunning = true; // To track animation state
+
+            // --- 2. Scene Elements State Variables ---
+            const car = {
+                x: -150, // Initial x position (start off-screen left)
+                y: canvas.height - 100, // Y position relative to bottom of canvas
+                width: 150,
+                height: 50,
+                speed: 3, // How much to translate in X per frame
+                wheelRotation: 0, // Current rotation angle for wheels
+                wheelSpeed: 0.1 // How much to rotate wheels per frame (radians)
+            };
+
+            const clouds = [];
+            const trees = [];
+            const birds = [];
+
+            // --- Configuration for background elements ---
+            const groundY = canvas.height - 30; // Y position of the top of the ground
+            const roadY = canvas.height - 50;   // Y position of the top of the road
+
+            // --- Utility Functions ---
+            function getRandomInt(min, max) {
+                return Math.floor(Math.random() * (max - min + 1)) + min;
+            }
+
+            // --- Drawing Functions ---
+
+            // Function to draw a more detailed car
+            function drawCarDetail() {
+                ctx.save();
+                ctx.translate(car.x, car.y); // Apply car's global position
+
+                // Main body of the car
+                ctx.fillStyle = '#FF4500'; // Orange car body
+                ctx.beginPath();
+                ctx.moveTo(0, 40); // Front bottom
+                ctx.lineTo(20, 10); // Front top curve
+                ctx.lineTo(130, 10); // Back top curve
+                ctx.lineTo(150, 40); // Back bottom
+                ctx.closePath();
+                ctx.fill();
+
+                // Cabin/roof
+                ctx.fillStyle = '#C0392B'; // Darker red for roof
+                ctx.beginPath();
+                ctx.moveTo(30, 10);
+                ctx.lineTo(120, 10);
+                ctx.lineTo(100, -10); // Roof peak
+                ctx.lineTo(50, -10); // Roof peak
+                ctx.closePath();
+                ctx.fill();
+
+                // Windows
+                ctx.fillStyle = '#ADD8E6'; // Light blue for windows
+                ctx.fillRect(55, 0, 40, 8); // Front window
+                ctx.fillRect(100, 0, 20, 8); // Back window
+
+                // Headlight
+                ctx.fillStyle = '#FFD700'; // Gold yellow
+                ctx.beginPath();
+                ctx.arc(10, 30, 5, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Taillight
+                ctx.fillStyle = '#DC143C'; // Crimson red
+                ctx.fillRect(140, 30, 8, 8);
+
+                // Undercarriage shadow
+                ctx.fillStyle = 'rgba(0,0,0,0.3)';
+                ctx.ellipse(car.width / 2, car.height + 5, car.width / 2, 10, 0, 0, Math.PI * 2);
+                ctx.fill();
+
+                // Wheels (unchanged, but now drawn relative to car's transformed origin)
+                const wheelRadius = 15;
+                const wheelYOffset = car.height - wheelRadius + 5; // Wheels slightly lower than car body
+
+                // Front Wheel
+                ctx.save();
+                ctx.translate(car.width * 0.25, wheelYOffset);
+                ctx.rotate(car.wheelRotation);
+                drawWheel(0, 0, wheelRadius);
+                ctx.restore();
+
+                // Back Wheel
+                ctx.save();
+                ctx.translate(car.width * 0.75, wheelYOffset);
+                ctx.rotate(car.wheelRotation);
+                drawWheel(0, 0, wheelRadius);
+                ctx.restore();
+
+                ctx.restore(); // Restore context after drawing car and its elements
+            }
+
+            // Function to draw a single wheel (can be reused)
+            function drawWheel(centerX, centerY, radius) {
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#333'; // Dark gray wheel
+                ctx.fill();
+                ctx.closePath();
+
+                // Draw rim/spokes
+                ctx.strokeStyle = '#666';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(centerX, centerY, radius * 0.6, 0, Math.PI * 2); // Inner circle
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(centerX - radius * 0.5, centerY);
+                ctx.lineTo(centerX + radius * 0.5, centerY);
+                ctx.moveTo(centerX, centerY - radius * 0.5);
+                ctx.lineTo(centerX, centerY + radius * 0.5);
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            // Function to draw a simple cloud
+            function drawCloud(x, y, width, height) {
+                ctx.fillStyle = 'white';
+                ctx.beginPath();
+                ctx.arc(x, y, width * 0.25, 0, Math.PI * 2);
+                ctx.arc(x + width * 0.3, y - height * 0.2, width * 0.25, 0, Math.PI * 2);
+                ctx.arc(x + width * 0.6, y, width * 0.28, 0, Math.PI * 2);
+                ctx.arc(x + width * 0.4, y + height * 0.2, width * 0.25, 0, Math.PI * 2);
+                ctx.arc(x + width * 0.1, y + height * 0.1, width * 0.23, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+            }
+
+            // Function to draw a simple tree
+            function drawTree(x, y, scale = 1) {
+                ctx.save();
+                ctx.translate(x, y); // Move to tree's position
+                ctx.scale(scale, scale); // Apply scale
+
+                // Trunk
+                ctx.fillStyle = '#6F4E37'; // Brown
+                ctx.fillRect(-10, 0, 20, 50);
+
+                // Foliage
+                ctx.fillStyle = '#228B22'; // Forest Green
+                ctx.beginPath();
+                ctx.arc(0, 0, 30, 0, Math.PI * 2);
+                ctx.arc(-20, -15, 25, 0, Math.PI * 2);
+                ctx.arc(20, -15, 25, 0, Math.PI * 2);
+                ctx.arc(0, -30, 20, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.closePath();
+
+                ctx.restore();
+            }
+
+            // Function to draw a simple bird
+            function drawBird(x, y, wingState) {
+                ctx.fillStyle = '#444'; // Dark gray
+                ctx.beginPath();
+                // Body
+                ctx.ellipse(x, y, 10, 5, 0, 0, Math.PI * 2);
+                ctx.fill();
+                // Wings
+                if (wingState === 0) { // Wings up
+                    ctx.moveTo(x - 10, y);
+                    ctx.lineTo(x - 20, y - 10);
+                    ctx.lineTo(x, y - 5);
+                    ctx.moveTo(x + 10, y);
+                    ctx.lineTo(x + 20, y - 10);
+                    ctx.lineTo(x, y - 5);
+                } else { // Wings down
+                    ctx.moveTo(x - 10, y);
+                    ctx.lineTo(x - 15, y + 5);
+                    ctx.lineTo(x, y);
+                    ctx.moveTo(x + 10, y);
+                    ctx.lineTo(x + 15, y + 5);
+                    ctx.lineTo(x, y);
+                }
+                ctx.stroke();
+                ctx.closePath();
+            }
+
+            // --- 4. Initialization ---
+            function initBackgroundElements() {
+                // Initialize clouds
+                for (let i = 0; i < 3; i++) {
+                    clouds.push({
+                        x: getRandomInt(0, canvas.width),
+                        y: getRandomInt(20, 100),
+                        width: getRandomInt(80, 150),
+                        height: getRandomInt(30, 60),
+                        speed: getRandomInt(1, 2) * 0.5 // Slower than car
+                    });
+                }
+
+                // Initialize trees
+                for (let i = 0; i < 2; i++) {
+                    trees.push({
+                        x: getRandomInt(0, canvas.width),
+                        y: groundY - getRandomInt(60, 100), // Position base of tree on ground
+                        scale: getRandomInt(8, 12) / 10, // Scale between 0.8 and 1.2
+                        speed: getRandomInt(2, 3) * 0.7 // Slower than car, faster than clouds
+                    });
+                }
+
+                // Initialize birds
+                for (let i = 0; i < 4; i++) {
+                    birds.push({
+                        x: getRandomInt(0, canvas.width),
+                        y: getRandomInt(30, 80),
+                        speed: getRandomInt(3, 5) * 0.8, // Bird speed
+                        wingState: 0, // 0 for up, 1 for down
+                        flapTimer: getRandomInt(0, 10) // Stagger flapping
+                    });
+                }
+            }
+
+            // --- 5. Update and Draw Loop ---
+            function animate() {
+                // Clear the entire canvas on each frame
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // --- Draw Background ---
+                // Sky is set as canvas background-color in CSS
+
+                // Ground
+                ctx.fillStyle = '#228B22'; // Forest green
+                ctx.fillRect(0, groundY, canvas.width, canvas.height - groundY);
+
+                // Road
+                ctx.fillStyle = '#666'; // Gray road
+                ctx.fillRect(0, roadY, canvas.width, groundY - roadY);
+
+                // --- Draw Clouds ---
+                for (let i = 0; i < clouds.length; i++) {
+                    const cloud = clouds[i];
+                    drawCloud(cloud.x, cloud.y, cloud.width, cloud.height);
+                    cloud.x -= cloud.speed; // Move clouds left
+
+                    // Reset cloud position if it goes off-screen
+                    if (cloud.x + cloud.width < 0) {
+                        cloud.x = canvas.width + getRandomInt(50, 150); // Appear from right
+                        cloud.y = getRandomInt(20, 100); // Random Y
+                        cloud.speed = getRandomInt(1, 2) * 0.5; // Random speed
+                    }
+                }
+
+                // --- Draw Trees ---
+                for (let i = 0; i < trees.length; i++) {
+                    const tree = trees[i];
+                    drawTree(tree.x, tree.y, tree.scale);
+                    tree.x -= tree.speed; // Move trees left
+
+                    // Reset tree position if off-screen
+                    if (tree.x + 50 * tree.scale < 0) { // 50 * scale is approx tree width
+                        tree.x = canvas.width + getRandomInt(50, 100);
+                        tree.y = groundY - getRandomInt(60, 100);
+                        tree.scale = getRandomInt(8, 12) / 10;
+                        tree.speed = getRandomInt(2, 3) * 0.7;
+                    }
+                }
+
+                // --- Draw Birds ---
+                for (let i = 0; i < birds.length; i++) {
+                    const bird = birds[i];
+                    drawBird(bird.x, bird.y, bird.wingState);
+                    bird.x -= bird.speed; // Move birds left
+
+                    // Flap wings
+                    bird.flapTimer++;
+                    if (bird.flapTimer % 10 === 0) { // Change wing state every 10 frames
+                        bird.wingState = 1 - bird.wingState; // Toggle between 0 and 1
+                    }
+
+                    // Reset bird position if off-screen
+                    if (bird.x < -20) {
+                        bird.x = canvas.width + getRandomInt(20, 50);
+                        bird.y = getRandomInt(30, 80);
+                        bird.speed = getRandomInt(3, 5) * 0.8;
+                        bird.flapTimer = getRandomInt(0, 10);
+                    }
+                }
+
+                // --- Draw Car ---
+                car.wheelRotation += car.wheelSpeed; // Update wheel rotation angle
+                car.x += car.speed; // Update car's global position
+
+                // Reset car position if it goes off-screen to the right
+                if (car.x > canvas.width + 50) { // Add some buffer
+                    car.x = -car.width - 50; // Start off-screen to the left again
+                }
+                drawCarDetail(); // Draw the car itself
+
+                // Request the next animation frame
+                if (isRunning) {
+                    animationId = requestAnimationFrame(animate);
+                }
+            }
+
+            // --- 6. Event Listeners ---
+            startStopBtn.addEventListener('click', () => {
+                if (isRunning) {
+                    // Stop the animation
+                    cancelAnimationFrame(animationId);
+                    isRunning = false;
+                    startStopBtn.textContent = 'Start';
+                    startStopBtn.classList.remove('bg-cyan-600', 'hover:bg-cyan-700');
+                    startStopBtn.classList.add('bg-green-600', 'hover:bg-green-700');
+                } else {
+                    // Start the animation
+                    isRunning = true;
+                    startStopBtn.textContent = 'Stop';
+                    startStopBtn.classList.remove('bg-green-600', 'hover:bg-green-700');
+                    startStopBtn.classList.add('bg-cyan-600', 'hover:bg-cyan-700');
+                    animate(); // Kick off the loop again
+                }
+            });
+
+            // --- 7. Start ---
+            initBackgroundElements(); // Populate clouds, trees, birds
+            animate();
+        });
+    </script>
+</body>
+
+</html>

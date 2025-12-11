@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polygon Drawer (using DDA)</title>
+
+    <!-- Load Tailwind CSS for styling -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Use Inter font */
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        canvas {
+            background-color: #f3f4f6;
+            /* Tailwind gray-100 */
+            border-radius: 0.5rem;
+            /* rounded-lg */
+            cursor: crosshair;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+
+    <div class="container mx-auto max-w-2xl w-full text-center">
+        <h1 class="text-3xl font-bold text-center text-cyan-400 mb-4">Polygon Drawer (using DDA)</h1>
+        <p class="text-gray-300 mb-4">Click on the canvas to add points (vertices). Press "Close Polygon" to finish.</p>
+
+        <div class="bg-gray-800 rounded-lg shadow-xl p-4">
+
+            <!-- The canvas element where the animation is drawn -->
+            <canvas id="polygonCanvas" width="800" height="400" class="w-full"></canvas>
+        </div>
+
+        <div class="mt-4 flex justify-center space-x-4">
+            <button id="closeButton"
+                class="bg-green-600 hover:bg-green-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 w-40">
+                Close Polygon
+            </button>
+            <button id="clearButton"
+                class="bg-red-600 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-lg transition-colors duration-200 w-40">
+                Clear
+            </button>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // --- 1. Setup ---
+            const canvas = document.getElementById('polygonCanvas');
+            const ctx = canvas.getContext('2d');
+            const closeButton = document.getElementById('closeButton');
+            const clearButton = document.getElementById('clearButton');
+
+            let vertices = []; // Array to store {x, y} objects
+            let isClosed = false; // Flag to check if polygon is complete
+
+            // --- 2. DDA Line Algorithm (from Q2) ---
+
+            /**
+             * Draws a single pixel (or a small rectangle) on the canvas.
+             * @param {number} x - The x-coordinate.
+             * @param {number} y - The y-coordinate.
+             */
+            function drawPixel(x, y) {
+                ctx.fillStyle = '#059669'; // Emerald green
+                ctx.fillRect(x, y, 2, 2); // Draw a 2x2 pixel to make it more visible
+            }
+
+            /**
+             * Implements the DDA line drawing algorithm.
+             * @param {number} x1 - Starting x-coordinate.
+             * @param {number} y1 - Starting y-coordinate.
+             * @param {number} x2 - Ending x-coordinate.
+             * @param {number} y2 - Ending y-coordinate.
+             */
+            function dda_line(x1, y1, x2, y2) {
+                const dx = x2 - x1;
+                const dy = y2 - y1;
+
+                // Determine the number of steps needed
+                let steps;
+                if (Math.abs(dx) > Math.abs(dy)) {
+                    steps = Math.abs(dx);
+                } else {
+                    steps = Math.abs(dy);
+                }
+
+                // Calculate the increment for x and y
+                const x_increment = dx / steps;
+                const y_increment = dy / steps;
+
+                let x = x1;
+                let y = y1;
+
+                // Loop for 'steps' times
+                for (let i = 0; i <= steps; i++) {
+                    // Round x and y to the nearest integer to get pixel coordinates
+                    drawPixel(Math.round(x), Math.round(y));
+
+                    // Increment x and y
+                    x += x_increment;
+                    y += y_increment;
+                }
+            }
+
+            // --- 3. Drawing Logic ---
+
+            /**
+             * Redraws the entire canvas based on the current vertices.
+             */
+            function redrawCanvas() {
+                // Clear the canvas
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                if (vertices.length === 0) return;
+
+                // Draw all vertices as red dots
+                ctx.fillStyle = '#DC2626'; // Red-600
+                for (const v of vertices) {
+                    ctx.fillRect(v.x - 3, v.y - 3, 6, 6); // Draw a 6x6 square for the vertex
+                }
+
+                // Draw lines between vertices
+                for (let i = 0; i < vertices.length - 1; i++) {
+                    const v1 = vertices[i];
+                    const v2 = vertices[i + 1];
+                    dda_line(v1.x, v1.y, v2.x, v2.y);
+                }
+
+                // If the polygon is closed, draw the final line
+                if (isClosed && vertices.length > 2) {
+                    const first = vertices[0];
+                    const last = vertices[vertices.length - 1];
+                    dda_line(last.x, last.y, first.x, first.y);
+                }
+            }
+
+            // --- 4. Event Listeners ---
+
+            /**
+             * Handles clicks on the canvas to add a new vertex.
+             */
+            canvas.addEventListener('click', (e) => {
+                // Don't add new points if the polygon is already closed
+                if (isClosed) return;
+
+                const rect = canvas.getBoundingClientRect();
+                const scaleX = canvas.width / rect.width;
+                const scaleY = canvas.height / rect.height;
+
+                const x = (e.clientX - rect.left) * scaleX;
+                const y = (e.clientY - rect.top) * scaleY;
+
+                // Add the new vertex to our list
+                vertices.push({ x: x, y: y });
+
+                // Redraw the canvas to show the new point and line
+                redrawCanvas();
+            });
+
+            /**
+             * Handles clicking the "Close Polygon" button.
+             */
+            closeButton.addEventListener('click', () => {
+                // Need at least 3 vertices to form a polygon
+                if (vertices.length > 2) {
+                    isClosed = true;
+                    redrawCanvas();
+                } else {
+                    // In a real app, you'd show a modal here instead of an alert
+                    console.warn("You need at least 3 points to close a polygon.");
+                }
+            });
+
+            /**
+             * Handles clicking the "Clear" button.
+             */
+            clearButton.addEventListener('click', () => {
+                vertices = [];
+                isClosed = false;
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+            });
+        });
+    </script>
+</body>
+
+</html>
